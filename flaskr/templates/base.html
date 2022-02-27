@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='materialize.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+    <link rel="script" href="{{ url_for('static', filename='materialize.min.js') }}">
+</head>
+<body>
+<header>
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo">Logo</a>
+            {% block navbar_right %}{% endblock %}
+        </div>
+    </nav>
+</header>
+<main class="container">
+    {% block main_body %}{% endblock %}
+</main>
+<footer class="page-footer">
+    <div class="footer-copyright">
+        <div class="container">
+            © 2022 Author(s) for this website
+        </div>
+    </div>
+</footer>
+</body>
+</html>
