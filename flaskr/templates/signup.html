@@ -1,25 +1,39 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Signup{% endblock %}
 
 {% block main %}
 <form action="">
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h1 class="display-4 pt-4 text-center">Login</h1>
+                <h1 class="display-4 pt-4 text-center">Signup</h1>
             </div>
         </div>
         <div class="row mt-4">
             <div class="col"></div>
-            <div class="col-4">
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name">
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address">
+                </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email address</label>
                     <input type="email" class="form-control" id="email">
+                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                 </div>
                 <div class="mb-3">
                     <label for="passwd" class="form-label">Password</label>
                     <input type="password" class="form-control" id="passwd">
+                    <div id="passwordHelp" class="form-text">Must be between 5 and 20 characters</div>
+                </div>
+                <div class="mb-3">
+                    <label for="confirm-passwd" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirm-passwd">
                 </div>
             </div>
             <div class="col"></div>
@@ -28,7 +42,7 @@
             <div class="col"></div>
             <div class="col-4">
                 <div class="d-flex justify-content-center">
-                    <button class="btn btn-primary">Login</button>
+                    <button class="btn btn-primary">Signup</button>
                 </div>
             </div>
             <div class="col"></div>
@@ -37,8 +51,8 @@
             <div class="col"></div>
             <div class="col-4">
                 <div class="d-flex justify-content-center pt-3">
-                    <div class="d-inline">New to aZaMon?</div>
-                    <a href={{url_for('auth.signup')}} class="d-inline ps-1 link-primary">Sign Up</a>
+                    <div class="d-inline">Already have an account?</div>
+                    <a href={{url_for('auth.login')}} class="d-inline ps-1 link-primary">Login</a>
                 </div>
             </div>
             <div class=" col"></div>
