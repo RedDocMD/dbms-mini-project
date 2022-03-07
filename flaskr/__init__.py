@@ -21,4 +21,7 @@ def create_app():
     def index():
         return render_template('index.html')
 
+    from . import auth
+    app.register_blueprint(auth.bp)
+
     return app

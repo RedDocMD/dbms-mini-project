@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block main %}
+<form action="">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-4 pt-4 text-center">Login</h1>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col"></div>
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email">
+                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="passwd" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="passwd">
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-4">
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary">Login</button>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-4">
+                <div class="d-flex justify-content-center pt-3">
+                    <div class="d-inline">New to aZaMon?</div>
+                    <a href="#" class="d-inline ps-1 link-primary">Sign Up</a>
+                </div>
+            </div>
+            <div class=" col"></div>
+        </div>
+    </div>
+</form>
+{% endblock %}
