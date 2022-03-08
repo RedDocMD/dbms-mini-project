@@ -1,7 +1,7 @@
 CREATE TABLE User (
     userId INTEGER PRIMARY KEY AUTOINCREMENT,
     fullName VARCHAR(100) NOT NULL,
-    emailAddress VARCHAR(100) NOT NULL,
+    emailAddress VARCHAR(100) NOT NULL UNIQUE,
     passwd VARCHAR(30) NOT NULL,
     userType CHAR(3) NOT NULL CHECK (userType IN ("USR", "ADM", "SLR"))
 );
