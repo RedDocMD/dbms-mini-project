@@ -1,5 +1,5 @@
 CREATE TABLE User (
-    userId INT PRIMARY KEY,
+    userId INTEGER PRIMARY KEY AUTOINCREMENT,
     fullName VARCHAR(100) NOT NULL,
     emailAddress VARCHAR(100) NOT NULL,
     passwd VARCHAR(30) NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE User (
 );
 
 CREATE TABLE Product (
-    productId INT PRIMARY KEY,
+    productId INTEGER PRIMARY KEY AUTOINCREMENT,
     productName VARCHAR(128) NOT NULL,
     productDescription VARCHAR(1024) NOT NULL
 );
@@ -33,7 +33,7 @@ CREATE TABLE Cart (
 
 CREATE TABLE UserAddress (
     userId INT NOT NULL,
-    addressId INT NOT NULL,
+    addressId INTEGER NOT NULL,
     addressName VARCHAR(300) NOT NULL,
     PRIMARY KEY (userId, addressId),
     FOREIGN KEY (userId) REFERENCES User(userId)
@@ -51,7 +51,7 @@ CREATE TABLE SellerProduct (
 );
 
 CREATE TABLE Orders (
-    orderId INT PRIMARY KEY,
+    orderId INTEGER PRIMARY KEY AUTOINCREMENT,
     userId INT NOT NULL,
     addressId INT NOT NULL,
     FOREIGN KEY (userId) REFERENCES User(userId),
