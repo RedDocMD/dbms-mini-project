@@ -26,6 +26,9 @@ def login():
         if error is None:
             session.clear()
             session['userId'] = user['userId']
+            fullName = user['fullName']
+            nameParts = fullName.split(' ')
+            session['firstName'] = nameParts[0]
             return redirect(url_for('index'))
 
         flash(error)
@@ -38,7 +41,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user - get_db().execute('SELECT * FROM User WHERE id= ?', (user_id, )).fetchone()
+        g.user = get_db().execute('SELECT * FROM User WHERE id= ?', (user_id, )).fetchone()
 
 
 @bp.route('/logout')
