@@ -1,13 +1,61 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import (Blueprint, render_template,
+                   g, request, redirect, url_for, flash, session)
 from flaskr.db import get_db
+import functools
 
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-@bp.route('/login', methods=['GET'])
+@bp.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        passwd = request.form['passwd']
+
+        db = get_db()
+        error = None
+
+        user = db.execute(
+            'SELECT * FROM User WHERE emailAddress = ?', (email,)).fetchone()
+        if user is None:
+            error = "Username doesn't exist"
+        elif passwd != user['passwd']:
+            error = 'Incorrect password'
+
+        if error is None:
+            session.clear()
+            session['userId'] = user['userId']
+            return redirect(url_for('index'))
+
+        flash(error)
     return render_template('login.html')
+
+
+@bp.before_app_first_request
+def load_logged_in_user():
+    user_id = session.get('userId')
+    if user_id is None:
+        g.user = None
+    else:
+        g.user - get_db().execute('SELECT * FROM User WHERE id= ?', (user_id, )).fetchone()
+
+
+@bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('auth.login'))
+
+
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+
+        return view(**kwargs)
+
+    return wrapped_view
 
 
 @bp.route('/signup', methods=['GET', 'POST'])
@@ -40,7 +88,7 @@ def signup():
                     (name, email, passwd, "USR"),
                 )
                 userId = db.execute(
-                    f'SELECT userId FROM User WHERE emailAddress = "{email}"').fetchone()[0]
+                    f'SELECT userId FROM User WHERE emailAddress = ?', (email,)).fetchone()[0]
                 oldMaxAddressId = db.execute(
                     "SELECT MAX(addressId) FROM UserAddress").fetchone()[0]
                 if oldMaxAddressId is None:

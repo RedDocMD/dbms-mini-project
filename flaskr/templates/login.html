@@ -3,23 +3,38 @@
 {% block title %}Login{% endblock %}
 
 {% block main %}
-<form action="">
+<form method="post">
     <div class="container">
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 pb-4">
                 <h1 class="display-4 pt-4 text-center">Login</h1>
             </div>
         </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-4">
+                <div class="alert alert-danger" role="alert">
+                    {{message}}
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
         <div class="row mt-4">
             <div class="col"></div>
             <div class="col-4">
                 <div class="mb-3">
                     <label for="email" class="form-label">Email address</label>
-                    <input type="email" class="form-control" id="email">
+                    <input type="email" class="form-control" id="email" name="email">
                 </div>
                 <div class="mb-3">
                     <label for="passwd" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="passwd">
+                    <input type="password" class="form-control" id="passwd" name="passwd">
                 </div>
             </div>
             <div class="col"></div>
