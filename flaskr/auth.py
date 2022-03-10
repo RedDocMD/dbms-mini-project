@@ -29,19 +29,20 @@ def login():
             fullName = user['fullName']
             nameParts = fullName.split(' ')
             session['firstName'] = nameParts[0]
+            g.user = user
             return redirect(url_for('index'))
 
         flash(error)
     return render_template('login.html')
 
 
-@bp.before_app_first_request
+@bp.before_app_request
 def load_logged_in_user():
     user_id = session.get('userId')
     if user_id is None:
         g.user = None
     else:
-        g.user = get_db().execute('SELECT * FROM User WHERE id= ?', (user_id, )).fetchone()
+        g.user = get_db().execute('SELECT * FROM User WHERE userId = ?', (user_id, )).fetchone()
 
 
 @bp.route('/logout')
@@ -53,7 +54,7 @@ def logout():
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if g.user is None:
+        if 'user' not in g or g.user is None:
             return redirect(url_for('auth.login'))
 
         return view(**kwargs)
