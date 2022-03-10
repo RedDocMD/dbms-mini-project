@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Wishlist{% endblock %}
+
+{% block main %}
+<div class="wishlist container-fluid" >
+    <div class="wishlist_header container">
+        <p class="display-3 pt-4 text-center">Your Wishlist</h3>
+    </div>
+    <div class="wishlist_cont container"> 
+        <ul style="list-style-type: none;">
+            <li class="pt-4">
+                <div class="card">
+                    <div class="card-header">
+                       product name
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title"><s>product price</s> discounted price</h5>
+                        <p class="card-text">product description loren ipsum lara lassan</p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                        <button class="btn btn-primary">Remove from Wishlist</button>
+                      </div>
+                </div>
+            </li>
+            <li class="pt-4">
+                <div class="card">
+                    <div class="card-header">
+                       product name
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title"><s>product price</s> discounted price</h5>
+                        <p class="card-text">product description loren ipsum lara lassan</p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                        <button class="btn btn-primary">Remove from Wishlist</button>
+                      </div>
+                </div>
+            </li>
+            {% for product in products %}
+            <li class="pt-4">
+                <div class="card">
+                    <div class="card-header">
+                       {{ product.name }}
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title"><s>{{ product.price }}</s> {{ product.discount_price }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                        <a href="'#" class="btn btn-primary">Remove from Wishlist</a>
+                      </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
