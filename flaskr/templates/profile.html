@@ -24,11 +24,31 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
-                            <ul class = "list-group">
-                                {% for address in user.addressNames %}
-                                <li class="list-group-item">{{ address }}</li>
+                            <div class = "list-group">
+                                {% for address in user.addressNames %}                                
+                                <div class = "list-group-item">
+                                        <div class = "d-flex flex-row align-items-center">
+                                            <div class = "flex-fill">
+                                                {{address}}
+                                            </div>
+                                            <div class = "flex-fill d-flex flex-row-reverse">                                            
+                                                <button class = "btn btn-danger mx-2">
+                                                    <i class="bi bi-trash"></i>
+                                                    Delete Address
+                                                </button>
+                                                <button class = "btn btn-primary mx-2">
+                                                    Edit Address
+                                                </button>
+                                            </div>
+                                        </div>
+                                </div>
                                 {% endfor %}
-                            </ul>
+                            </div>
+                            <div class = "text-center mt-3">
+                                <button class = "btn btn-primary">
+                                    Add Address
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -51,7 +71,11 @@
                                                 <div class = "d-inline">Cost:</div><div class = "d-inline ps-1 fw-bolder">₹{{order.cost}}</div>
                                             </div>
                                             <div class = "flex-fill d-flex flex-row-reverse">
-                                                <button class = "btn btn-primary">
+                                                <button class = "btn btn-danger mx-2">
+                                                    <i class="bi bi-trash"></i>
+                                                    Delete Order
+                                                </button>
+                                                <button class = "btn btn-primary mx-2">
                                                     See Order
                                                 </button>
                                             </div>
@@ -62,6 +86,67 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            {% elif user.userType == "SLR" %}
+            <div class = "text-center">
+                <h3 class="text-center">
+                    List of Items sold by you
+                </h3>
+            </div>
+            <div class = "list-group">
+                {% for item in user['items'] %}
+                <div class = "list-group-item">
+                        <div class = "d-flex flex-row align-items-center">
+                            <div class = "flex-fill">
+                                {{item.name}}
+                            </div>
+                            <div class = "flex-fill d-flex flex-row-reverse">
+                                <button class = "btn btn-danger mx-2">
+                                    <i class="bi bi-trash"></i>
+                                    Delete Item
+                                </button>
+                                <button class = "btn btn-primary mx-2">
+                                    Edit Item
+                                </button>
+                            </div>
+                        </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class = "text-center mt-3">
+                <button class = "btn btn-primary">
+                    Add Item
+                </button>
+            </div>
+            {% elif user.userType == "ADM" %}
+            <div class = "text-center">
+                <h3 class="text-center">
+                    List of Sellers
+            </div>
+            <div class = "list-group">
+                {% for seller in user['sellers'] %}
+                <div class = "list-group-item">
+                        <div class = "d-flex flex-row align-items-center">
+                            <div class = "flex-fill">
+                                {{seller.name}}
+                            </div>
+                            <div class = "flex-fill d-flex flex-row-reverse">
+                                <button class = "btn btn-danger mx-2">
+                                    <i class="bi bi-trash"></i>
+                                    Delete Seller
+                                </button>
+                                <button class = "btn btn-primary mx-2">
+                                    Edit Seller
+                                </button>
+                            </div>
+                        </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class = "text-center mt-3">
+                <button class = "btn btn-primary">
+                    Add Seller
+                </button>
             </div>
             {% endif %}
         </div>

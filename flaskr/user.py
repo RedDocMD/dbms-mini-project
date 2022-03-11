@@ -54,3 +54,137 @@ def wishlist():
     ).fetchall()
 
     return render_template('wishlist.html', products=products)
+
+
+@bp.route('/profile', methods=['GET'])
+@login_required
+def profile():
+    db = get_db()
+    user_id = g.user['userId']
+
+    user = {}
+
+    userData = db.execute((
+        'SELECT * '
+        'FROM USER u '
+        'WHERE u.userId = ?'
+    ), (user_id,)).fetchone()
+
+    error = None
+
+    if user is None:
+        error = "User doesn't exist"
+    
+    if error is None:
+        user['fullName'] = userData['fullName']
+        user['emailAddress'] = userData['emailAddress']
+        userType = userData['userType']
+        user['userType'] = userType
+
+        if userType == 'USR':
+            addresses = []
+            addressData = db.execute((
+                'SELECT * '
+                'FROM UserAddress a '
+                'WHERE a.userId = ?'
+            ), (user_id,)).fetchall()
+
+            for row in addressData:
+                addresses.append(row['addressName'])
+            user['addressNames'] = addresses
+
+            user['orders'] = []
+            return render_template('profile.html', user = user)
+    flash(error)
+    
+    # user = {
+    #     "fullName": "John Doe",
+    #     "emailAddress": "xyz@gmail.com",
+    #     "userType": "USR",
+    #     "addressNames": [
+    #         "1-a, Torana Apartments, Sahar Rd, Opp. P & T Colony, Andheri(e), Mumbai",
+    #         "2nd Floor Ntc House, Nm Marg, Ballard Estate",
+    #         "4, Jaya Niwas, Goraswadi, Near Milap Talkies, Malad (west)",    
+    #     ],
+    #     "orders":[
+    #         {
+    #             "numItems": 6,
+    #             "cost": 1500
+    #         },
+    #         {
+    #             "numItems": 7,
+    #             "cost": 2000
+    #         },
+    #         {
+    #             "numItems": 1,
+    #             "cost": 2100
+    #         },
+    #         {
+    #             "numItems": 8,
+    #             "cost": 2300
+    #         },
+    #     ],
+    # }
+
+    # user = {
+    #     "fullName": "John Doe",
+    #     "emailAddress": "xyz@gmail.com",
+    #     "userType": "SLR",
+    #     "items":[
+    #         {
+    #             "name": "Lays",
+    #         },
+    #         {
+    #             "name": "Kurkure",
+    #         },
+    #         {
+    #             "name": "Crescent City",
+    #         },
+    #         {
+    #             "name": "Harry Potter",
+    #         },
+    #     ],
+    # }
+
+    user = {
+        "fullName": "John Doe",
+        "emailAddress": "xyz@gmail.com",
+        "userType": "ADM",
+        "sellers":[
+            {
+                "name": "John Cena",
+            },
+            {
+                "name": "Undertaker",
+            },
+            {
+                "name": "CM Punk",
+            },
+            {
+                "name": "Batista",
+            },
+        ],
+    }
+
+    order = {
+        "items": [
+            {
+                "name": "Lays",
+                "quantity": 2,
+                "cost": 1000,
+            },
+            {
+                "name": "Kurkure",
+                "quantity": 2,
+                "cost": 2000,
+            },
+            {
+                "name": "Novel",
+                "quantity": 1,
+                "cost": 3000,
+            },
+        ],
+        "cost": 6000,
+        "address": "1-a, Torana Apartments, Sahar Rd, Opp. P & T Colony, Andheri(e), Mumbai",
+    }
+    return render_template('profile.html', user = user, order = order)
