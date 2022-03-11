@@ -25,5 +25,7 @@ def create_app():
     app.register_blueprint(auth.bp)
     from . import user
     app.register_blueprint(user.bp)
+    from . import order
+    app.register_blueprint(order.bp)
 
     return app

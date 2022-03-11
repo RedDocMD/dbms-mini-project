@@ -71,7 +71,7 @@
                                                 <div class = "d-inline">Cost:</div><div class = "d-inline ps-1 fw-bolder">₹{{order.cost}}</div>
                                             </div>
                                             <div class = "flex-fill d-flex flex-row-reverse">
-                                                <button class = "btn btn-danger mx-2">
+                                                <button class = "btn btn-danger mx-2" href = {{ url_for('order.order', order_id = order.order_id)}}>
                                                     <i class="bi bi-trash"></i>
                                                     Delete Order
                                                 </button>

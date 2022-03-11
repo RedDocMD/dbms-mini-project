@@ -31,7 +31,7 @@ def login():
             nameParts = fullName.split(' ')
             session['firstName'] = nameParts[0]
             g.user = user
-            return redirect(url_for('user.profile'))
+            return redirect(url_for('index.html'))
 
         flash(error)
     return render_template('login.html')
