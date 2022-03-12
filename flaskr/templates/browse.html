@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Browse{% endblock %}
+
+{% block main %}
+<div class="container-fluid pt-4 mx-auto">
+        <div class="input-group w-50 mx-auto">
+            <input type="text" class="form-control" placeholder="Search"/>
+            <a href="#" class="btn btn-primary">
+                <i class="bi bi-search"></i>
+            </a>
+        </div>
+    <div class="container">
+        <ul style="list-style-type: none;">
+            <li class="pt-4">
+                <div class="card">
+                    <div class="card-header">
+                       Product
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><s>product price</s>discount_price</h5>
+                        <p class="card-text">product description loren ipsum</p>
+                        <p class="card-text"><small class="text-muted">Sold By : Amazon</small></p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                        <a href="#" class="btn btn-primary">Add to Wishlist</a>
+                    </div>
+                </div>
+            </li>
+            <li class="pt-4">
+                <div class="card">
+                    <div class="card-header">
+                       Product
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><s>product price</s>discount_price</h5>
+                        <p class="card-text">product description loren ipsum</p>
+                        <p class="card-text"><small class="text-muted">Sold By : Amazon</small></p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                        <a href="#" class="btn btn-primary">Add to Wishlist</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
