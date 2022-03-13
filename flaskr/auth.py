@@ -2,6 +2,7 @@ from flask import (Blueprint, render_template,
                    g, request, redirect, url_for, flash, session)
 from flaskr.db import get_db
 import functools
+import bcrypt
 
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -20,7 +21,7 @@ def login():
             'SELECT * FROM User WHERE emailAddress = ?', (email,)).fetchone()
         if user is None:
             error = "Username doesn't exist"
-        elif passwd != user['passwd']:
+        elif not bcrypt.checkpw(passwd.encode('utf8'), user['passwd']):
             error = 'Incorrect password'
 
         if error is None:
@@ -87,9 +88,11 @@ def signup():
 
         if not errors:
             try:
+                hashed_passwd = bcrypt.hashpw(
+                    passwd.encode('utf8'), bcrypt.gensalt())
                 db.execute(
                     "INSERT INTO User (fullName, emailAddress, passwd, userType) VALUES (?, ?, ?, ?)",
-                    (name, email, passwd, "USR"),
+                    (name, email, hashed_passwd, "USR"),
                 )
                 userId = db.execute(
                     f'SELECT userId FROM User WHERE emailAddress = ?', (email,)).fetchone()[0]
