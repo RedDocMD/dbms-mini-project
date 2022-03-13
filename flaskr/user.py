@@ -59,6 +59,23 @@ def wishlist():
 @bp.route('/profile', methods=['GET'])
 @login_required
 def profile():
+    user = {
+        "fullName": "John Doe",
+        "emailAddress": "xyz@gmail.com",
+        "userType": "ADM",
+        "sellers": [
+            {
+                "name": "Aaditya",
+                "seller_id": 1
+            },
+            {
+                "name": "Deep",
+                "seller_id": 2
+            }
+        ]
+    }
+
+    return render_template('profile.html', user = user)
     db = get_db()
     user_id = g.user['userId']
 
@@ -94,6 +111,40 @@ def profile():
             user['addressNames'] = addresses
 
             user['orders'] = []
+            return render_template('profile.html', user = user)
+        elif userType == 'SLR':
+            items = []
+            itemData = db.execute((
+                'SELECT p.productName, p.productId '
+                'FROM SellerProduct sp, Product p '
+                'WHERE sp.sellerId = ? AND p.productId = sp.productId'
+            ), (user_id,)).fetchall()
+
+            for row in itemData:
+                items.append(
+                    {
+                        "name": row["productName"],
+                        "product_id": row["productId"]
+                    }
+                )
+            user['items'] = items
+            return render_template('profile.html', user = user)
+        elif userType == 'ADM':
+            sellers = []
+            sellerData = db.execute((
+                'SELECT u.userId, u.fullName '
+                'FROM User u '
+                'WHERE u.userType = "SLR"'
+            )).fetchall()
+
+            for row in sellerData:
+                sellers.append(
+                    {
+                        "name": row["fullName"],
+                        "seller_id": row["userId"]
+                    }
+                )
+            user['sellers'] = sellers
             return render_template('profile.html', user = user)
     flash(error)
     

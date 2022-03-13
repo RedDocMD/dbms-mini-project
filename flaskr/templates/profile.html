@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Profile Page{% endblock %}
 {% block main %}
+<script>
+    function delete_seller(seller_id) {
+        location.reload()
+    }
+</script>
 <div class = "container pt-3 my-3">
     <h1 class="display-4 text-center">Profile</h1>
     <div class = "card text-dark my-3">
@@ -131,7 +136,7 @@
                                 {{seller.name}}
                             </div>
                             <div class = "flex-fill d-flex flex-row-reverse">
-                                <button class = "btn btn-danger mx-2">
+                                <button class = "btn btn-danger mx-2" id={{seller.seller_id}} onclick="delete_seller(this.id)">
                                     <i class="bi bi-trash"></i>
                                     Delete Seller
                                 </button>
