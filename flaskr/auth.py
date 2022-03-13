@@ -105,7 +105,7 @@ def signup():
             except db.IntegrityError:
                 errors.append(f"{email} is already registered")
             else:
-                return redirect(url_for('index'))
+                return redirect(url_for('auth.login'))
 
         for error in errors:
             flash(error)

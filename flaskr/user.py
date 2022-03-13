@@ -14,7 +14,7 @@ def cart():
     user_id = g.user['userId']
 
     productsData = db.execute(
-        ('SELECT DISTINCT p.productId, p.productName, p.productDescription, c.quantity, sp.price, sp.discount  '
+        ('SELECT p.productId, p.productName, p.productDescription, c.quantity, sp.price, sp.discount  '
          'FROM Product p, Cart c, SellerProduct sp '
          'WHERE p.productId = c.productId AND c.userId = ? AND sp.productId = p.productId'), (user_id,)).fetchall()
 
@@ -37,3 +37,20 @@ def cart():
 
     return render_template('cart.html',
                            products=products, prices=prices, discounted_prices=discounted_prices)
+
+
+@bp.route('/wishlist', methods=['GET'])
+@login_required
+def wishlist():
+    db = get_db()
+    user_id = g.user['userId']
+
+    products = db.execute(
+        (
+            'SELECT p.productId, p.productName, p.productDescription '
+            'FROM Wishlist w, Product p '
+            'WHERE p.productId = w.productId AND w.userId = ?'
+        ), (user_id, )
+    ).fetchall()
+
+    return render_template('wishlist.html', products=products)
