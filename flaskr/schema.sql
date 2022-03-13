@@ -54,6 +54,7 @@ CREATE TABLE Orders (
     orderId INTEGER PRIMARY KEY AUTOINCREMENT,
     userId INT NOT NULL,
     addressId INT NOT NULL,
+    totalCost INT NOT NULL,
     FOREIGN KEY (userId) REFERENCES User(userId),
     FOREIGN KEY (addressId) REFERENCES UserAddress(addressId)
 );
@@ -61,6 +62,9 @@ CREATE TABLE Orders (
 CREATE TABLE OrderProduct (
     orderId INT NOT NULL,
     productId INT NOT NULL,
+    productName VARCHAR(128) NOT NULL,
+    originalPrice INT NOT NULL,
+    discountPrice INT NOT NULL,
     sellerId INT NOT NULL,
     quantity INT NOT NULL,
     PRIMARY KEY (orderId, productId, sellerId),
