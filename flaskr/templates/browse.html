@@ -5,7 +5,7 @@
 <div class="container-fluid pt-4 mx-auto">
         <div class="input-group w-50 mx-auto">
             <input type="text" class="form-control" placeholder="Search"/>
-            <a href="#" class="btn btn-primary">
+            <a href="#" class="search-btn btn btn-primary">
                 <i class="bi bi-search"></i>
             </a>
         </div>
@@ -25,20 +25,22 @@
                     </div>
                 </div>
             </li>
+            {% for product in products %}
             <li class="pt-4">
                 <div class="card">
                     <div class="card-header">
-                       Product
+                        {{product['productName']}}
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title"><s>product price</s>discount_price</h5>
-                        <p class="card-text">product description loren ipsum</p>
-                        <p class="card-text"><small class="text-muted">Sold By : Amazon</small></p>
+                        <h5 class="card-title"><s>{{prices[product['productId']]}}</s> {{discounted_prices[product['productId']]}}</h5>
+                        <p class="card-text">{{product['productDescription']}}</p>
+                        <p class="card-text"><small class="text-muted">Sold By : {{ sellers[product['productId']] }} </small></p>
                         <a href="#" class="btn btn-primary">Add to Cart</a>
                         <a href="#" class="btn btn-primary">Add to Wishlist</a>
                     </div>
                 </div>
             </li>
+            {% endfor %}
         </ul>
     </div>
 </div>

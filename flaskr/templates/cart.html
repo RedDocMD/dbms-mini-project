@@ -1,10 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Wishlist{% endblock %}
+{% block title %}Cart{% endblock %}
 
 {% block main %}
 <script>
     $(document).ready(function () {
         function incrementValue(e) {
+            prodId = e.prodId;
+            sellerId = e.prodId;
+            e = e.e1;
+            console.log(prodId)
             e.preventDefault();
             var fieldName = $(e.target).data('field');
             var parent = $(e.target).closest('div');
@@ -12,12 +16,25 @@
 
             if (!isNaN(currentVal)) {
                 parent.find('input[name=' + fieldName + ']').val(currentVal + 1);
+                $.post("/cart", 
+                {
+                    type:"Q",
+                    prodId:prodId,
+                    sellerId:sellerId,
+                    newQ:currentVal+1
+                },
+                function(){});
+
             } else {
                 parent.find('input[name=' + fieldName + ']').val(0);
             }
         }
 
         function decrementValue(e) {
+            prodId = e.prodId;
+            sellerId = e.prodId;
+            e = e.e1;
+            console.log(prodId)
             e.preventDefault();
             var fieldName = $(e.target).data('field');
             var parent = $(e.target).closest('div');
@@ -25,17 +42,38 @@
 
             if (!isNaN(currentVal) && currentVal > 1) {
                 parent.find('input[name=' + fieldName + ']').val(currentVal - 1);
+                $.post("/cart", 
+                {
+                    type:"Q",
+                    prodId:prodId,
+                    sellerId:sellerId,
+                    newQ:currentVal-1
+                },
+                function(){});
             } else {
                 parent.find('input[name=' + fieldName + ']').val(1);
             }
         }
 
         $('.input-group').on('click', '.button-plus', function (e) {
-            incrementValue(e);
-        });
+            incrementValue({e1:e, prodId:e.target.name});
+        }); 
 
         $('.input-group').on('click', '.button-minus', function (e) {
-            decrementValue(e);
+            decrementValue({e1:e, prodId:e.target.name});
+        });
+
+        $('.card-body').on('click', '.remove-cart-btn', function (e) {
+            prodId = e.target.name
+            sellerId = e.target.name
+            $.post("/cart", 
+            {
+                type:"R",
+                prodId:prodId,
+                sellerId:sellerId,
+                newQ:-1
+            },
+            function(){});
         });
 
     });
@@ -47,6 +85,24 @@
     </div>
     <div class="cart_cont container">
         <ul style="list-style-type: none;">
+            <li class="pt-4">
+                <div class="card">
+                    <div class="card-header">
+                        Product
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><s>Hello</s>
+                            Mello</h5>
+                        <p class="card-text">abcde fghijkl mnop</p>
+                        <div class="input-group">
+                            <input type="button" name="4" value="-" class="button-minus border rounded-circle icon-shape mx-1 " data-field="quantity" style="width: 2rem; height: 2rem;">
+                            <input type="number" min="1" value="1" name="quantity" class="quantity-field border-1 text-center mx-1" style="width: 4rem; height: 2rem;">
+                            <input type="button" name="4" value="+" class="button-plus border rounded-circle icon-shape ml-1 " data-field="quantity" style="width: 2rem; height: 2rem;">
+                        </div>
+                        <button class="remove-cart-btn btn-primary mt-1" name="4">Remove from Cart</button>
+                    </div>
+                </div>
+            </li>
             {% for product in products %}
             <li class="pt-4">
                 <div class="card">
@@ -58,14 +114,14 @@
                             {{discounted_prices[product['productId']]}}</h5>
                         <p class="card-text">{{product['productDescription']}}</p>
                         <div class="input-group">
-                            <input type="button" value="-" class="button-minus border rounded-circle  icon-shape mx-1 "
+                            <input type="button" name="productId,sellerId" value="-" class="button-minus border rounded-circle  icon-shape mx-1 "
                                 data-field="quantity" style="width: 2rem; height: 2rem;">
-                            <input type="number" min="1" value="1" name="quantity"
+                            <input type="number" name="product_quantity" min="1" value=" {{ product['quantity'] }}" name="quantity"
                                 class="quantity-field border-1 text-center mx-1" style="width: 4rem; height: 2rem;">
-                            <input type="button" value="+" class="button-plus border rounded-circle icon-shape ml-1 "
+                            <input type="button" name="productId,sellerId" value="+" class="button-plus border rounded-circle icon-shape ml-1 "
                                 data-field="quantity" style="width: 2rem; height: 2rem;">
                         </div>
-                        <button class="remove-cart-btn btn-primary mt-1">Remove from Cart</button>
+                        <button class="remove-cart-btn btn-primary mt-1" name="productId,sellerId">Remove from Cart</button>
                     </div>
                 </div>
             </li>

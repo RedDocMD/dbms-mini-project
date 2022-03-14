@@ -2,6 +2,21 @@
 {% block title %}Wishlist{% endblock %}
 
 {% block main %}
+<script>
+    $(document).ready(function () {
+        $('.card-body').on('click', '.rem-wishlist-btn', function (e) {
+            prodId = e.target.name
+            sellerId = e.target.name
+            $.post("/wishlist", 
+            {
+                type:"R",
+                prodId:prodId
+            },
+            function(){});
+        });
+
+    });
+</script>
 <div class="wishlist container-fluid" >
     <div class="wishlist_header container">
         <p class="display-3 pt-4 text-center">Your Wishlist</h3>
@@ -43,8 +58,8 @@
                       <div class="card-body">
                         <h5 class="card-title"><s>{{ product.price }}</s> {{ product.discount_price }}</h5>
                         <p class="card-text">{{ product.description }}</p>
-                        <a href="#" class="btn btn-primary">Add to Cart</a>
-                        <a href="'#" class="btn btn-primary">Remove from Wishlist</a>
+                        <a href="#" class="add-cart-btn btn btn-primary">Add to Cart</a>
+                        <a href="#" class="rem-wishlist-btn btn-primary">Remove from Wishlist</a>
                       </div>
                 </div>
             </li>
