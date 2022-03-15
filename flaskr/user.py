@@ -449,3 +449,14 @@ def deleteItem():
         return render_template('wishlist.html',
                             products=products)
 
+@bp.route('/search', methods=['POST'])
+@login_required
+def search():
+    if (request.method == 'POST') :
+        db = get_db()
+        
+        all_prods = db.execute(
+            ('SELECT DISTINCT p.productId, p.productName, p.productDescription, sp.sellerId, u.fullName '
+            'FROM Product p, SellerProduct sp, User u '
+            'WHERE p.productName = ? AND ')
+        )
