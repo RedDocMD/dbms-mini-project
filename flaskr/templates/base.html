@@ -28,7 +28,7 @@
                     <div class="d-inline text-light ps-2">{{firstName}}</div>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="{{url_for('user.profile')}}">Profile</a></li>
                     <li><a class="dropdown-item" href={{url_for('auth.logout')}}>Logout</a></li>
                     <li><a class="dropdown-item" href={{url_for('user.cart')}}>Cart</a></li>
                     <li><a class="dropdown-item" href={{url_for('user.wishlist')}}>Wishlist</a></li>
