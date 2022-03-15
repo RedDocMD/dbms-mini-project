@@ -71,13 +71,14 @@ def deleteOrder():
         
         db.execute((
             'DELETE '
-            'FROM Orders o'
-            'WHERE o.orderId = ?'
+            'FROM Orders '
+            'WHERE orderId = ?'
         ), (order_id,))
 
         db.execute((
             'DELETE '
-            'FROM OrderProduct op'
-            'WHERE op.orderId = ?'
+            'FROM OrderProduct '
+            'WHERE orderId = ?'
         ), (order_id,))
+        db.commit()
         return "", 201

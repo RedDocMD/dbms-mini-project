@@ -74,40 +74,74 @@ def profile():
     #         }
     #     ]
     # }
-    user = {
-        "fullName": "John Doe",
-        "emailAddress": "xyz@gmail.com",
-        "userType": "USR",
-        "addressNames": [
-            "1-a, Torana Apartments, Sahar Rd, Opp. P & T Colony, Andheri(e), Mumbai",
-            "2nd Floor Ntc House, Nm Marg, Ballard Estate",
-            "4, Jaya Niwas, Goraswadi, Near Milap Talkies, Malad (west)",    
-        ],
-        "orders":[
-            {
-                "order_id": 1,
-                "numItems": 6,
-                "cost": 1500
-            },
-            {
-                "order_id": 2,
-                "numItems": 7,
-                "cost": 2000
-            },
-            {
-                "order_id": 3,
-                "numItems": 1,
-                "cost": 2100
-            },
-            {
-                "order_id": 4,
-                "numItems": 8,
-                "cost": 2300
-            },
-        ],
-    }
+    # user = {
+    #     "fullName": "John Doe",
+    #     "emailAddress": "xyz@gmail.com",
+    #     "userType": "USR",
+    #     "addressNames": [
+    #         {
+    #             "addressName": "1-a, Torana Apartments, Sahar Rd, Opp. P & T Colony, Andheri(e), Mumbai",
+    #             "address_id": 1
+    #         },
+    #         {
+    #             "addressName": "2nd Floor Ntc House, Nm Marg, Ballard Estate",
+    #             "address_id": 2
+    #         },
+    #         {
+    #             "addressName": "4, Jaya Niwas, Goraswadi, Near Milap Talkies, Malad (west)", 
+    #             "address_id": 3
+    #         }
+               
+    #     ],
+    #     "orders":[
+    #         {
+    #             "order_id": 1,
+    #             "numItems": 6,
+    #             "cost": 1500
+    #         },
+    #         {
+    #             "order_id": 2,
+    #             "numItems": 7,
+    #             "cost": 2000
+    #         },
+    #         {
+    #             "order_id": 3,
+    #             "numItems": 1,
+    #             "cost": 2100
+    #         },
+    #         {
+    #             "order_id": 4,
+    #             "numItems": 8,
+    #             "cost": 2300
+    #         },
+    #     ],
+    # }
 
-    return render_template('profile.html', user = user)
+    # user = {
+    #     "fullName": "John Doe",
+    #     "emailAddress": "xyz@gmail.com",
+    #     "userType": "SLR",
+    #     "items":[
+    #         {
+    #             "name": "Lays",
+    #             "product_id": 1,
+    #         },
+    #         {
+    #             "name": "Kurkure",
+    #             "product_id": 2,
+    #         },
+    #         {
+    #             "name": "Crescent City",
+    #             "product_id": 3,
+    #         },
+    #         {
+    #             "name": "Harry Potter",
+    #             "product_id": 4,
+    #         },
+    #     ],
+    # }
+
+    # return render_template('profile.html', user = user)
     db = get_db()
     user_id = g.user['userId']
 
@@ -129,6 +163,7 @@ def profile():
         user['emailAddress'] = userData['emailAddress']
         userType = userData['userType']
         user['userType'] = userType
+        user['userId'] = userData['userId']
 
         if userType == 'USR':
             addresses = []
@@ -139,7 +174,10 @@ def profile():
             ), (user_id,)).fetchall()
 
             for row in addressData:
-                addresses.append(row['addressName'])
+                addresses.append({
+                    "addressName": row['addressName'],
+                    "address_id": row['addressId']
+                })
             user['addressNames'] = addresses
 
             user['orders'] = []
@@ -179,55 +217,7 @@ def profile():
             user['sellers'] = sellers
             return render_template('profile.html', user = user)
     flash(error)
-    
-    # user = {
-    #     "fullName": "John Doe",
-    #     "emailAddress": "xyz@gmail.com",
-    #     "userType": "USR",
-    #     "addressNames": [
-    #         "1-a, Torana Apartments, Sahar Rd, Opp. P & T Colony, Andheri(e), Mumbai",
-    #         "2nd Floor Ntc House, Nm Marg, Ballard Estate",
-    #         "4, Jaya Niwas, Goraswadi, Near Milap Talkies, Malad (west)",    
-    #     ],
-    #     "orders":[
-    #         {
-    #             "numItems": 6,
-    #             "cost": 1500
-    #         },
-    #         {
-    #             "numItems": 7,
-    #             "cost": 2000
-    #         },
-    #         {
-    #             "numItems": 1,
-    #             "cost": 2100
-    #         },
-    #         {
-    #             "numItems": 8,
-    #             "cost": 2300
-    #         },
-    #     ],
-    # }
 
-    # user = {
-    #     "fullName": "John Doe",
-    #     "emailAddress": "xyz@gmail.com",
-    #     "userType": "SLR",
-    #     "items":[
-    #         {
-    #             "name": "Lays",
-    #         },
-    #         {
-    #             "name": "Kurkure",
-    #         },
-    #         {
-    #             "name": "Crescent City",
-    #         },
-    #         {
-    #             "name": "Harry Potter",
-    #         },
-    #     ],
-    # }
 
 @bp.route('/deleteSeller', methods=['POST'])
 @login_required
@@ -241,8 +231,47 @@ def deleteSeller():
 
         db.execute((
             'DELETE '
-            'FROM USER u '
-            'WHERE u.userId = ?'
+            'FROM User '
+            'WHERE userId = ?'
         ), (seller_id,))
+        db.commit()
+        return "", 201
+
+@bp.route('/deleteAddress', methods=['POST'])
+@login_required
+def deleteAddress():
+    if request.method == 'POST':
+        try:
+            address_id = request.form['address_id']
+            user_id = g.user['userId']
+        except:
+            return ""
+        db = get_db()
+
+        db.execute((
+            'DELETE '
+            'FROM UserAddress '
+            'WHERE userId = ? and addressId = ?'
+        ), (user_id, address_id,))
+        db.commit()
+        return "", 201
+
+@bp.route('/deleteProduct', methods=['POST'])
+@login_required
+def deleteItem():
+    if request.method == 'POST':
+        try:
+            product_id = request.form['product_id']
+            user_id = g.user['userId']
+        except:
+            return ""
+        db = get_db()
+
+        db.execute((
+            'DELETE '
+            'FROM SellerProduct '
+            'WHERE sellerId = ? and productId = ?'
+        ), (user_id, product_id,))
+        db.commit()
         return "", 201
 

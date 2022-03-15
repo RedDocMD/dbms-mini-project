@@ -113,3 +113,55 @@ def signup():
         for error in errors:
             flash(error)
     return render_template('signup.html')
+
+@bp.route('/register_seller', methods=['POST', 'GET'])
+@login_required
+def register_seller():
+    print("Idhar")
+    if request.method == 'POST':
+        name = request.form['name']
+        address = request.form['address']
+        email = request.form['email']
+        passwd = request.form['passwd']
+        confirm_passwd = request.form['confirm-passwd']
+
+        db = get_db()
+
+        errors = []
+        if not name:
+            errors.append("Name is required")
+        if not address:
+            errors.append("Address is required")
+        if not email:
+            errors.append("Email is required")
+        if not passwd:
+            errors.append("Password is required")
+        if passwd != confirm_passwd:
+            errors.append("Passwords don't match")
+
+        if not errors:
+            try:
+                db.execute(
+                    "INSERT INTO User (fullName, emailAddress, passwd, userType) VALUES (?, ?, ?, ?)",
+                    (name, email, passwd, "SLR"),
+                )
+                userId = db.execute(
+                    f'SELECT userId FROM User WHERE emailAddress = ?', (email,)).fetchone()[0]
+                oldMaxAddressId = db.execute(
+                    "SELECT MAX(addressId) FROM UserAddress").fetchone()[0]
+                if oldMaxAddressId is None:
+                    oldMaxAddressId = 0
+                db.execute(
+                    "INSERT INTO UserAddress (userId, addressId, addressName) VALUES (?, ?, ?)",
+                    (userId, oldMaxAddressId + 1, address),
+                )
+                db.commit()
+            except db.IntegrityError:
+                errors.append(f"{email} is already registered")
+            else:
+                return redirect(url_for('user.profile'))
+
+        for error in errors:
+            flash(error)
+    print("Idhar")
+    return render_template('register_seller.html')

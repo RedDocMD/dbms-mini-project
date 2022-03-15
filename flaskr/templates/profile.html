@@ -10,11 +10,26 @@
         });
                 
     }
+    function delete_address(address_id) {
+        console.log(address_id)
+        $.post("deleteAddress",
+        {
+            'address_id': address_id,
+        });
+    }
     function delete_order(order_id) {
         console.log(order_id)
         $.post("../order/deleteOrder",
         {
             'order_id': order_id,
+        });
+    }
+    
+    function delete_product(product_id) {
+        console.log(product_id)
+        $.post("deleteProduct",
+        {
+            'product_id': product_id,
         });
     }
 </script>
@@ -46,10 +61,10 @@
                                 <div class = "list-group-item">
                                         <div class = "d-flex flex-row align-items-center">
                                             <div class = "flex-fill">
-                                                {{address}}
+                                                {{address.addressName}}
                                             </div>
                                             <div class = "flex-fill d-flex flex-row-reverse">                                            
-                                                <button class = "btn btn-danger mx-2">
+                                                <button class = "btn btn-danger mx-2" onclick="delete_address({{address.address_id}})">
                                                     <i class="bi bi-trash"></i>
                                                     Delete Address
                                                 </button>
@@ -88,13 +103,13 @@
                                                 <div class = "d-inline">Cost:</div><div class = "d-inline ps-1 fw-bolder">₹{{order.cost}}</div>
                                             </div>
                                             <div class = "flex-fill d-flex flex-row-reverse">
-                                                <button class = "btn btn-danger mx-2" id={{order.order_id}} onclick="delete_order(this.id)">
+                                                <button class = "btn btn-danger mx-2" onclick="delete_order({{order.order_id}})">
                                                     <i class="bi bi-trash"></i>
                                                     Delete Order
                                                 </button>
-                                                <button class = "btn btn-primary mx-2" href = {{ url_for('order.order', order_id = order.order_id)}}>
+                                                <a class = "btn btn-primary mx-2" href={{ url_for('order.order', order_id = order.order_id)}}>
                                                     See Order
-                                                </button>
+                                                </a>
                                             </div>
                                         </div>
                                 </div>
@@ -118,7 +133,7 @@
                                 {{item.name}}
                             </div>
                             <div class = "flex-fill d-flex flex-row-reverse">
-                                <button class = "btn btn-danger mx-2">
+                                <button class = "btn btn-danger mx-2" onclick="delete_product({{item.product_id}})">
                                     <i class="bi bi-trash"></i>
                                     Delete Item
                                 </button>
@@ -148,7 +163,7 @@
                                 {{seller.name}}
                             </div>
                             <div class = "flex-fill d-flex flex-row-reverse">
-                                <button class = "btn btn-danger mx-2" id={{seller.seller_id}} onclick="delete_seller(this.id)">
+                                <button class = "btn btn-danger mx-2" onclick="delete_seller({{seller.seller_id}})">
                                     <i class="bi bi-trash"></i>
                                     Delete Seller
                                 </button>
@@ -161,9 +176,9 @@
                 {% endfor %}
             </div>
             <div class = "text-center mt-3">
-                <button class = "btn btn-primary">
+                <a class = "btn btn-primary" href={{ url_for('auth.register_seller') }}>
                     Add Seller
-                </button>
+                </a>
             </div>
             {% endif %}
         </div>
