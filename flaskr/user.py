@@ -29,7 +29,6 @@ def cart():
             db.execute(
                 ('DELETE FROM Cart '
                 'WHERE userId = ? AND prodId = ? AND sellerId = ?'),(user_id, prodId, sellerId))
-            )
             
             productsData = db.execute(
                 ('SELECT DISTINCT p.productId, p.productName, p.productDescription, c.quantity, sp.price, sp.discount  '

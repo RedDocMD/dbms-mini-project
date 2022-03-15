@@ -2,9 +2,29 @@
 {% block title %}Browse{% endblock %}
 
 {% block main %}
+<script>
+    $(document).ready(function () {
+        $('.search-box').on('click', '.search-btn', function (e) {
+            e.preventDefault();
+            searchStr = $('.search-bar').val()
+            $.ajax(
+            {
+                type: "GET",
+                url: "{{url_for('search')}}",
+                data: { "query": search_term },
+                success: function (response) {
+                        $("#result").empty(); //remove whatever is there and append whatever is returned
+                        $("#result").append(response.result) //append whatever you want to append
+                }
+            }
+        )
+        });
+
+    });
+</script>
 <div class="container-fluid pt-4 mx-auto">
-        <div class="input-group w-50 mx-auto">
-            <input type="text" class="form-control" placeholder="Search"/>
+        <div class="search-box input-group w-50 mx-auto">
+            <input type="text" class="search-bar form-control" placeholder="Search"/>
             <a href="#" class="search-btn btn btn-primary">
                 <i class="bi bi-search"></i>
             </a>
