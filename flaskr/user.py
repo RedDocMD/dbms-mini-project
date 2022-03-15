@@ -59,20 +59,52 @@ def wishlist():
 @bp.route('/profile', methods=['GET'])
 @login_required
 def profile():
+    # user = {
+    #     "fullName": "John Doe",
+    #     "emailAddress": "xyz@gmail.com",
+    #     "userType": "ADM",
+    #     "sellers": [
+    #         {
+    #             "name": "Aaditya",
+    #             "seller_id": 1
+    #         },
+    #         {
+    #             "name": "Deep",
+    #             "seller_id": 2
+    #         }
+    #     ]
+    # }
     user = {
         "fullName": "John Doe",
         "emailAddress": "xyz@gmail.com",
-        "userType": "ADM",
-        "sellers": [
+        "userType": "USR",
+        "addressNames": [
+            "1-a, Torana Apartments, Sahar Rd, Opp. P & T Colony, Andheri(e), Mumbai",
+            "2nd Floor Ntc House, Nm Marg, Ballard Estate",
+            "4, Jaya Niwas, Goraswadi, Near Milap Talkies, Malad (west)",    
+        ],
+        "orders":[
             {
-                "name": "Aaditya",
-                "seller_id": 1
+                "order_id": 1,
+                "numItems": 6,
+                "cost": 1500
             },
             {
-                "name": "Deep",
-                "seller_id": 2
-            }
-        ]
+                "order_id": 2,
+                "numItems": 7,
+                "cost": 2000
+            },
+            {
+                "order_id": 3,
+                "numItems": 1,
+                "cost": 2100
+            },
+            {
+                "order_id": 4,
+                "numItems": 8,
+                "cost": 2300
+            },
+        ],
     }
 
     return render_template('profile.html', user = user)
@@ -196,4 +228,21 @@ def profile():
     #         },
     #     ],
     # }
+
+@bp.route('/deleteSeller', methods=['POST'])
+@login_required
+def deleteSeller():
+    if request.method == 'POST':
+        try:
+            seller_id = request.form['seller_id']
+        except:
+            return ""
+        db = get_db()
+
+        db.execute((
+            'DELETE '
+            'FROM USER u '
+            'WHERE u.userId = ?'
+        ), (seller_id,))
+        return "", 201
 

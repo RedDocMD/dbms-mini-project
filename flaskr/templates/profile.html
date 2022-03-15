@@ -3,7 +3,19 @@
 {% block main %}
 <script>
     function delete_seller(seller_id) {
-        location.reload()
+        console.log(seller_id)
+        $.post("deleteSeller",
+        {
+            'seller_id': seller_id,
+        });
+                
+    }
+    function delete_order(order_id) {
+        console.log(order_id)
+        $.post("../order/deleteOrder",
+        {
+            'order_id': order_id,
+        });
     }
 </script>
 <div class = "container pt-3 my-3">
@@ -76,11 +88,11 @@
                                                 <div class = "d-inline">Cost:</div><div class = "d-inline ps-1 fw-bolder">₹{{order.cost}}</div>
                                             </div>
                                             <div class = "flex-fill d-flex flex-row-reverse">
-                                                <button class = "btn btn-danger mx-2" href = {{ url_for('order.order', order_id = order.order_id)}}>
+                                                <button class = "btn btn-danger mx-2" id={{order.order_id}} onclick="delete_order(this.id)">
                                                     <i class="bi bi-trash"></i>
                                                     Delete Order
                                                 </button>
-                                                <button class = "btn btn-primary mx-2">
+                                                <button class = "btn btn-primary mx-2" href = {{ url_for('order.order', order_id = order.order_id)}}>
                                                     See Order
                                                 </button>
                                             </div>

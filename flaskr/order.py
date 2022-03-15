@@ -58,24 +58,26 @@ def order():
 
         return render_template('orderSummary.html', user = user, order = order)
         
+
+@bp.route('/deleteOrder', methods=['POST'])
+@login_required
+def deleteOrder():
+    if request.method == 'POST':
+        try:
+            order_id = request.form['order_id']
+        except:
+            return ""
         db = get_db()
-        error = None
+        
+        db.execute((
+            'DELETE '
+            'FROM Orders o'
+            'WHERE o.orderId = ?'
+        ), (order_id,))
 
-        user = db.execute(
-            'SELECT * FROM User WHERE emailAddress = ?', (email,)).fetchone()
-        if user is None:
-            error = "Username doesn't exist"
-        elif passwd != user['passwd']:
-            error = 'Incorrect password'
-
-        if error is None:
-            session.clear()
-            session['userId'] = user['userId']
-            fullName = user['fullName']
-            nameParts = fullName.split(' ')
-            session['firstName'] = nameParts[0]
-            g.user = user
-            return redirect(url_for('index.html'))
-
-        flash(error)
-    return render_template('login.html')
+        db.execute((
+            'DELETE '
+            'FROM OrderProduct op'
+            'WHERE op.orderId = ?'
+        ), (order_id,))
+        return "", 201
