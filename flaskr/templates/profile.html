@@ -4,186 +4,192 @@
 <script>
     function delete_seller(seller_id) {
         console.log(seller_id)
-        $.post("deleteSeller",
-        {
+        $.post("deleteSeller", {
             'seller_id': seller_id,
         });
-                
+
     }
+
     function delete_address(address_id) {
         console.log(address_id)
-        $.post("deleteAddress",
-        {
+        $.post("deleteAddress", {
             'address_id': address_id,
         });
     }
+
     function delete_order(order_id) {
         console.log(order_id)
-        $.post("../order/deleteOrder",
-        {
+        $.post("../order/deleteOrder", {
             'order_id': order_id,
         });
     }
-    
+
     function delete_product(product_id) {
         console.log(product_id)
-        $.post("deleteProduct",
-        {
+        $.post("/item/delete", {
             'product_id': product_id,
         });
     }
 </script>
-<div class = "container pt-3 my-3">
+<div class="container pt-3 my-3">
     <h1 class="display-4 text-center">Profile</h1>
-    <div class = "card text-dark my-3">
+    <div class="card text-dark my-3">
         {% if user.userType == "ADM" %}
-        <div class = "card-header">Admin</div>
+        <div class="card-header">Admin</div>
         {% elif user.userType == "SLR"%}
-        <div class = "card-header">Seller</div>
+        <div class="card-header">Seller</div>
         {% else %}
-        <div class = "card-header">User</div>
+        <div class="card-header">User</div>
         {% endif %}
-        <div class = "card-body">
-            <h2 class = "card-title text-center">{{ user.fullName }}</h1>
-            <h4 class = "card-subtitle mb-5 text-muted text-center">{{ user.emailAddress }}</h3> 
-            {% if user.userType == "USR" %}
-            <div class="accordion" id = "accordionExample">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Addresses
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <div class = "list-group">
-                                {% for address in user.addressNames %}                                
-                                <div class = "list-group-item">
-                                        <div class = "d-flex flex-row align-items-center">
-                                            <div class = "flex-fill">
-                                                {{address.addressName}}
-                                            </div>
-                                            <div class = "flex-fill d-flex flex-row-reverse">                                            
-                                                <button class = "btn btn-danger mx-2" onclick="delete_address({{address.address_id}})">
-                                                    <i class="bi bi-trash"></i>
-                                                    Delete Address
-                                                </button>
-                                                <button class = "btn btn-primary mx-2">
-                                                    Edit Address
-                                                </button>
+        <div class="card-body">
+            <h2 class="card-title text-center">{{ user.fullName }}</h1>
+                <h4 class="card-subtitle mb-5 text-muted text-center">{{ user.emailAddress }}</h3>
+                    {% if user.userType == "USR" %}
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Addresses
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="list-group">
+                                        {% for address in user.addressNames %}
+                                        <div class="list-group-item">
+                                            <div class="d-flex flex-row align-items-center">
+                                                <div class="flex-fill">
+                                                    {{address.addressName}}
+                                                </div>
+                                                <div class="flex-fill d-flex flex-row-reverse">
+                                                    <button class="btn btn-danger mx-2"
+                                                        onclick="delete_address({{address.address_id}})">
+                                                        <i class="bi bi-trash"></i>
+                                                        Delete Address
+                                                    </button>
+                                                    <button class="btn btn-primary mx-2">
+                                                        Edit Address
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <button class="btn btn-primary">
+                                            Add Address
+                                        </button>
+                                    </div>
                                 </div>
-                                {% endfor %}
                             </div>
-                            <div class = "text-center mt-3">
-                                <button class = "btn btn-primary">
-                                    Add Address
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Orders
                                 </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                                data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="list-group">
+                                        {% for order in user.orders %}
+                                        <div class="list-group-item">
+                                            <div class="d-flex flex-row align-items-center">
+                                                <div class="flex-fill">
+                                                    Number of items: {{order.numItems}}
+                                                </div>
+                                                <div class="flex-fill d-flex justify-content-center">
+                                                    <div class="d-inline">Cost:</div>
+                                                    <div class="d-inline ps-1 fw-bolder">₹{{order.cost}}</div>
+                                                </div>
+                                                <div class="flex-fill d-flex flex-row-reverse">
+                                                    <button class="btn btn-danger mx-2"
+                                                        onclick="delete_order({{order.order_id}})">
+                                                        <i class="bi bi-trash"></i>
+                                                        Delete Order
+                                                    </button>
+                                                    <a class="btn btn-primary mx-2"
+                                                        href={{ url_for('order.order', order_id = order.order_id)}}>
+                                                        See Order
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Orders
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <div class = "list-group">
-                                {% for order in user.orders %}
-                                <div class = "list-group-item">
-                                        <div class = "d-flex flex-row align-items-center">
-                                            <div class = "flex-fill">
-                                                Number of items: {{order.numItems}}
-                                            </div>
-                                            <div class = "flex-fill d-flex justify-content-center">
-                                                <div class = "d-inline">Cost:</div><div class = "d-inline ps-1 fw-bolder">₹{{order.cost}}</div>
-                                            </div>
-                                            <div class = "flex-fill d-flex flex-row-reverse">
-                                                <button class = "btn btn-danger mx-2" onclick="delete_order({{order.order_id}})">
-                                                    <i class="bi bi-trash"></i>
-                                                    Delete Order
-                                                </button>
-                                                <a class = "btn btn-primary mx-2" href={{ url_for('order.order', order_id = order.order_id)}}>
-                                                    See Order
-                                                </a>
-                                            </div>
-                                        </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
+                    {% elif user.userType == "SLR" %}
+                    <div class="text-center">
+                        <h3 class="text-center">
+                            List of Items sold by you
+                        </h3>
                     </div>
-                </div>
-            </div>
-            {% elif user.userType == "SLR" %}
-            <div class = "text-center">
-                <h3 class="text-center">
-                    List of Items sold by you
-                </h3>
-            </div>
-            <div class = "list-group">
-                {% for item in user['items'] %}
-                <div class = "list-group-item">
-                        <div class = "d-flex flex-row align-items-center">
-                            <div class = "flex-fill">
-                                {{item.name}}
-                            </div>
-                            <div class = "flex-fill d-flex flex-row-reverse">
-                                <button class = "btn btn-danger mx-2" onclick="delete_product({{item.product_id}})">
-                                    <i class="bi bi-trash"></i>
-                                    Delete Item
-                                </button>
-                                <button class = "btn btn-primary mx-2">
-                                    Edit Item
-                                </button>
+                    <div class="list-group">
+                        {% for item in user['items'] %}
+                        <div class="list-group-item">
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="flex-fill">
+                                    {{item.name}}
+                                </div>
+                                <div class="flex-fill d-flex flex-row-reverse">
+                                    <button class="btn btn-danger mx-2" onclick="delete_product({{item.product_id}})">
+                                        <i class="bi bi-trash"></i>
+                                        Delete Item
+                                    </button>
+                                    <button class="btn btn-primary mx-2">
+                                        Edit Item
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                </div>
-                {% endfor %}
-            </div>
-            <div class = "text-center mt-3">
-                <button class = "btn btn-primary">
-                    Add Item
-                </button>
-            </div>
-            {% elif user.userType == "ADM" %}
-            <div class = "text-center">
-                <h3 class="text-center">
-                    List of Sellers
-            </div>
-            <div class = "list-group">
-                {% for seller in user['sellers'] %}
-                <div class = "list-group-item">
-                        <div class = "d-flex flex-row align-items-center">
-                            <div class = "flex-fill">
-                                {{seller.name}}
-                            </div>
-                            <div class = "flex-fill d-flex flex-row-reverse">
-                                <button class = "btn btn-danger mx-2" onclick="delete_seller({{seller.seller_id}})">
-                                    <i class="bi bi-trash"></i>
-                                    Delete Seller
-                                </button>
-                                <button class = "btn btn-primary mx-2">
-                                    Edit Seller
-                                </button>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a class="btn btn-primary" href={{url_for('item.add')}}>
+                            Add Item
+                        </a>
+                    </div>
+                    {% elif user.userType == "ADM" %}
+                    <div class="text-center">
+                        <h3 class="text-center">
+                            List of Sellers
+                    </div>
+                    <div class="list-group">
+                        {% for seller in user['sellers'] %}
+                        <div class="list-group-item">
+                            <div class="d-flex flex-row align-items-center">
+                                <div class="flex-fill">
+                                    {{seller.name}}
+                                </div>
+                                <div class="flex-fill d-flex flex-row-reverse">
+                                    <button class="btn btn-danger mx-2" onclick="delete_seller({{seller.seller_id}})">
+                                        <i class="bi bi-trash"></i>
+                                        Delete Seller
+                                    </button>
+                                    <button class="btn btn-primary mx-2">
+                                        Edit Seller
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                </div>
-                {% endfor %}
-            </div>
-            <div class = "text-center mt-3">
-                <a class = "btn btn-primary" href={{ url_for('auth.register_seller') }}>
-                    Add Seller
-                </a>
-            </div>
-            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a class="btn btn-primary" href={{ url_for('auth.register_seller') }}>
+                            Add Seller
+                        </a>
+                    </div>
+                    {% endif %}
         </div>
     </div>
-    
-    
+
+
 </div>
 {% endblock %}

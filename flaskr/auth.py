@@ -114,6 +114,7 @@ def signup():
             flash(error)
     return render_template('signup.html')
 
+
 @bp.route('/register_seller', methods=['POST', 'GET'])
 @login_required
 def register_seller():
@@ -141,9 +142,11 @@ def register_seller():
 
         if not errors:
             try:
+                hashed_passwd = bcrypt.hashpw(
+                    passwd.encode('utf8'), bcrypt.gensalt())
                 db.execute(
                     "INSERT INTO User (fullName, emailAddress, passwd, userType) VALUES (?, ?, ?, ?)",
-                    (name, email, passwd, "SLR"),
+                    (name, email, hashed_passwd, "SLR"),
                 )
                 userId = db.execute(
                     f'SELECT userId FROM User WHERE emailAddress = ?', (email,)).fetchone()[0]
