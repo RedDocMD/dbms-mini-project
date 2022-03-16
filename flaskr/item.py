@@ -100,3 +100,17 @@ def assign_values(product_id):
     product = db.execute(
         'SELECT * FROM Product WHERE productId = ?', (product_id, )).fetchone()
     return render_template('assign_item_data.html', product=product)
+
+
+@bp.route('/edit/<product_id>', methods=['GET', 'POST'])
+@login_required
+def edit(product_id):
+    db = get_db()
+    if request.method == 'POST':
+        pass
+    product = db.execute(
+        'SELECT * FROM Product WHERE productId = ?', (product_id, )).fetchone()
+    seller_data = db.execute(
+        'SELECT price, discount, quantity FROM SellerProduct WHERE productId = ? AND sellerId = ?',
+        (product_id, g.user['userId'])).fetchone()
+    return render_template('edit_item.html', product=product, seller_data=seller_data)
