@@ -1,15 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Order Summary{% endblock %}
 {% block main %}
-<div class = "container">
+<div class="container">
     <h1 class="display-4 pt-4 text-center">Order Summary</h1>
-    <div class = "border border-2 rounded p-4 mt-5">
-        <p class = "fw-bolder fs-5 mb-0"> {{user.fullName}}</p>
-        <p class = "fw-bolder fs-6 text-muted mt-0"> {{user.emailAddress}}</p>
+    <div class="border border-2 rounded p-4 mt-5">
+        <p class="fw-bolder fs-5 mb-0"> {{user.fullName}}</p>
+        <p class="fw-bolder fs-6 text-muted mt-0"> {{user.emailAddress}}</p>
+        <p class="fs-6"> {{order.address}}</p>
 
-        <p class = "fs-6"> {{
-        <table class="table table-strorder.address}}</p>
-iped">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">Item Name</th>
@@ -20,15 +19,17 @@ iped">
             <tbody>
                 {% for item in order['items'] %}
                 <tr>
-                    <th scope = "row">{{ item.name }}</td>
+                    <th scope="row">{{ item.name }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>₹{{ item.cost }}</td>
                 </tr>
                 {% endfor %}
                 <tr>
-                    <th scope="row" colspan="2"><div class = "d-flex flex-row-reverse me-4">
-                        Total   
-                    </div></td>
+                    <th scope="row" colspan="2">
+                        <div class="d-flex flex-row-reverse me-4">
+                            Total
+                        </div>
+                        </td>
                     <td>₹{{ order.cost }}</td>
                 </tr>
             </tbody>

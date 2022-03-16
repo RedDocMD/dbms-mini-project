@@ -442,14 +442,14 @@ def profile():
                 'SELECT orderId, totalCost '
                 'FROM Orders '
                 'WHERE userId = ?'
-            ), (user_id)).fetchall()
+            ), (user_id, )).fetchall()
             for row in orderData:
                 orderId = row['orderId']
                 orderProductData = db.execute((
                     'SELECT COUNT(*) AS numItems '
                     'FROM OrderProduct '
                     'WHERE orderId = ?'
-                ),(orderId)).fetchone()
+                ), (orderId, )).fetchone()
                 numItems = orderProductData["numItems"]
                 user['orders'].append({
                     "numItems": numItems,
