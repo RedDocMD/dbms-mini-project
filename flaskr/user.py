@@ -237,6 +237,77 @@ def deleteSeller():
         db.commit()
         return "", 201
 
+@bp.route('/addAddress', methods=['GET','POST'])
+@login_required
+def addAddress():
+    if request.method == 'POST':
+        address = request.form['address']
+        
+        db = get_db()
+        
+        errors = []
+        if not address:
+            errors.append("Address is required")
+
+        if not errors:
+            try:
+                user_id = g.user['userId']
+
+                oldMaxAddressId = db.execute(
+                    "SELECT MAX(addressId) FROM UserAddress").fetchone()[0]
+                if oldMaxAddressId is None:
+                    oldMaxAddressId = 0
+                db.execute(
+                    "INSERT INTO UserAddress (userId, addressId, addressName) VALUES (?, ?, ?)",
+                    (user_id, oldMaxAddressId + 1, address),
+                )
+                db.commit()
+            except Exception as r:
+                errors.append("Error in inserting new address")
+            else:
+                return redirect(url_for('user.profile'))
+
+        for error in errors:
+            flash(error)
+    return render_template('addAddress.html')
+
+@bp.route('/editAddress/<address_id>', methods=['GET','POST'])
+@login_required
+def editAddress(address_id):
+    db = get_db()
+    if request.method == 'POST':
+        address = request.form['address']
+        
+        db = get_db()
+        
+        errors = []
+        if not address:
+            errors.append("Address is required")
+
+        if not errors:
+            try:
+                db.execute(
+                    'UPDATE UserAddress SET addressName = ? WHERE userId = ? AND addressId = ?',
+                    (address, g.user['userId'], address_id)
+                )
+                db.commit()
+            except Exception as r:
+                errors.append("Error in inserting new address")
+            else:
+                return redirect(url_for('user.profile'))
+
+        for error in errors:
+            flash(error)
+    
+
+    addressData = db.execute(
+        'SELECT * '
+        'FROM UserAddress AS ua '
+        'WHERE ua.userId = ? AND ua.addressId = ?'
+    ,(g.user['userId'], address_id)).fetchone()
+
+    print(addressData["addressName"])
+    return render_template('editAddress.html', address=addressData)
 
 @bp.route('/deleteAddress', methods=['POST'])
 @login_required
