@@ -1,6 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}Add Item{% endblock %}
+{% block title %}New Product{% endblock %}
 
 {% block main %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-4 text-center pt-4">New Product</h1>
+        </div>
+    </div>
+    <div class="row pt-5">
+        <div class="col"></div>
+        <div class="col-4 d-flex justify-content-between">
+            <a href="#" class="btn btn-primary">From Existing</a>
+            <a href={{url_for('item.create')}} class="btn btn-primary">Create New</a>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+
 {% endblock %}

@@ -27,9 +27,13 @@ def delete():
         return "", 201
 
 
-@bp.route('/add', methods=['GET', 'POST'])
+@bp.route('/add', methods=['GET'])
 @login_required
 def add():
-    if request.method == 'POST':
-        pass
     return render_template('add_item.html')
+
+
+@bp.route('/create', methods=['GET', 'POST'])
+@login_required
+def create():
+    return render_template('add_new_item.html')
