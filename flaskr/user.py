@@ -63,6 +63,15 @@ def cart():
     else:
         db = get_db()
         user_id = g.user['userId']
+        prodId = request.args.get('prodId',"")
+        sellerId = request.args.get('sellerId',"")
+
+        if(prodId != ""):
+            db.execute(
+                ('DELETE FROM Cart '
+                'WHERE userId = ? AND productId = ? AND sellerId = ?'), (user_id, prodId, sellerId))
+            db.commit()
+        
         all_prods = db.execute(
             ('SELECT DISTINCT p.productId, p.productName, p.productDescription, sp.sellerId, u.fullName, sp.price, sp.discount, c.quantity '
              'FROM Product p, SellerProduct sp, User u, Cart c '
@@ -176,8 +185,8 @@ def wishlisttocart():
     if (request.method == 'GET'):
         user_id = g.user['userId']
         db = get_db()
-        sellerId = request.form.get('seller')
-        prodId = request.form.get('prod')
+        sellerId = request.args['seller']
+        prodId = request.args['prod']
 
         # delete from wishlist
         # add to cart
@@ -185,10 +194,10 @@ def wishlisttocart():
         db.execute(
             ('DELETE FROM Wishlist '
              'WHERE productId = ? AND userId = ? '), (prodId, user_id))
+        db.commit()
         db.execute(
             ('INSERT INTO Cart '
-             'VALUES (?,?,?,1) '), (user_id, prodId, sellerId)
-        )
+             'VALUES (?,?,?,1) '), (user_id, prodId, sellerId))
         db.commit()
 
         return redirect(url_for('user.wishlist'))

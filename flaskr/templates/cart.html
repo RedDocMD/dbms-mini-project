@@ -68,19 +68,6 @@
                 sellerId: e.target.name.split(',')[1]
             });
         });
-
-        $('.card-body').on('click', '.remove-cart-btn', function (e) {
-            prodId = e.target.name
-            sellerId = e.target.name
-            $.post("/user/cart", {
-                    type: "R",
-                    prodId: prodId,
-                    sellerId: sellerId,
-                    newQ: -1
-                },
-                function () {});
-        });
-
     });
 </script>
 
@@ -144,8 +131,11 @@
                                 class="button-plus border rounded-circle icon-shape ml-1 " data-field="quantity"
                                 style="width: 2rem; height: 2rem;">
                         </div>
-                        <button class="remove-cart-btn btn-primary mt-1"
-                            name="{{product['productId']}},{{product['sellerId']}}">Remove from Cart</button>
+                        <form method="get" action="{{url_for('user.cart')}}">
+                        <input type="hidden" name="prodId" value="{{product['productId']}}"/>
+                        <input type="hidden" name="sellerId" value="{{product['sellerId']}}"/>
+                        <button type="submit" class="remove-cart-btn btn-primary mt-1" >Remove from Cart</button>
+                        </form>
                     </div>
                 </div>
             </li>
