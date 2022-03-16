@@ -1,5 +1,5 @@
 import os
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, g
 
 
 def create_app():
@@ -16,10 +16,6 @@ def create_app():
     from . import db
     db.init_app(app)
 
-    @app.get("/")
-    def index():
-        return redirect(url_for('user.profile'))
-
     from . import auth
     app.register_blueprint(auth.bp)
     from . import user
@@ -28,5 +24,14 @@ def create_app():
     app.register_blueprint(order.bp)
     from . import item
     app.register_blueprint(item.bp)
+
+    @app.get("/")
+    def index():
+        if g.user:
+            if g.user['userType'] == 'USR':
+                return redirect(url_for('user.browse'))
+            else:
+                return redirect(url_for('user.profile'))
+        return redirect(url_for('auth.login'))
 
     return app

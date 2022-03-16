@@ -32,7 +32,10 @@ def login():
             session['firstName'] = nameParts[0]
             session['userType'] = user['userType']
             g.user = user
-            return redirect(url_for('user.profile'))
+            if user['userType'] == 'USR':
+                return redirect(url_for('user.browse'))
+            else:
+                return redirect(url_for('user.profile'))
 
         flash(error)
     return render_template('login.html')
