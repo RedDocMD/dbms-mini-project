@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, redirect, url_for
 
 
 def create_app():
@@ -17,9 +17,8 @@ def create_app():
     db.init_app(app)
 
     @app.get("/")
-    @app.get("/index.html")
     def index():
-        return render_template('index.html')
+        return redirect(url_for('user.profile'))
 
     from . import auth
     app.register_blueprint(auth.bp)
