@@ -97,6 +97,9 @@ def assign_values(product_id):
             errors.append(f'Failed to add {e}')
         else:
             return redirect(url_for('user.profile'))
+
+        for error in errors:
+            flash(error)
     product = db.execute(
         'SELECT * FROM Product WHERE productId = ?', (product_id, )).fetchone()
     return render_template('assign_item_data.html', product=product)
@@ -107,7 +110,22 @@ def assign_values(product_id):
 def edit(product_id):
     db = get_db()
     if request.method == 'POST':
-        pass
+        price = request.form['price']
+        disc = request.form['discount']
+        qty = request.form['quantity']
+        errors = []
+        try:
+            db.execute(
+                'UPDATE SellerProduct SET price = ?, discount = ?, quantity = ? WHERE productId = ? AND sellerId = ?',
+                (price, disc, qty, product_id, g.user['userId']))
+            db.commit()
+        except db.IntegrityError as e:
+            errors.append(f'Failed to edit {e}')
+        else:
+            return redirect(url_for('user.profile'))
+
+        for error in errors:
+            flash(error)
     product = db.execute(
         'SELECT * FROM Product WHERE productId = ?', (product_id, )).fetchone()
     seller_data = db.execute(
