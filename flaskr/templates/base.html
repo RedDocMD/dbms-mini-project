@@ -28,10 +28,11 @@
                     <div class="d-inline text-light ps-2">{{firstName}}</div>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{url_for('user.profile')}}">Profile</a></li>
+                    <li><a class="dropdown-item" href={{url_for('user.profile')}}>Profile</a></li>
                     <li><a class="dropdown-item" href={{url_for('auth.logout')}}>Logout</a></li>
                     {% if session.get('userType') == "USR" %}
                     <li><a class="dropdown-item" href={{url_for('user.cart')}}>Cart</a></li>
+                    <li><a class="dropdown-item" href={{url_for('user.browse')}}>Browse</a></li>
                     <li><a class="dropdown-item" href={{url_for('user.wishlist')}}>Wishlist</a></li>
                     {% endif %}
                 </ul>
