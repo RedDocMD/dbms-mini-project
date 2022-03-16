@@ -14,6 +14,19 @@
     <div id="sellers"></div>
     <div class="wishlist_cont container">
         <ul style="list-style-type: none;">
+            <li class="pt-4">
+                <div class="card">
+                    <div class="card-header">
+                       product name
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title"><s>product price</s> discounted price</h5>
+                        <p class="card-text">product description loren ipsum lara lassan</p>
+                        <a href="#" name="{{ product.prodId }}" class="add-cart-btn btn btn-primary">Add to Cart</a>
+                        <button name="{{ product.prodId }}" class="rem-wishlist-btn btn btn-primary">Remove from Wishlist</button>
+                      </div>
+                </div>
+            </li>
             {% for product in products %}
             <li class="pt-4">
                 <div class="card">
