@@ -130,8 +130,10 @@ def checkout():
     user_id = g.user['userId']
 
     productsData = db.execute(
-        ('SELECT productName, productDescription, c.quantity, price, discount, sp.sellerId FROM Cart AS c, SellerProduct AS sp, Product AS p '
-         'WHERE c.userId = ? AND c.productId = sp.productId AND c.sellerId = sp.sellerId AND p.productId = c.productId'), (user_id, )).fetchall()
+        ('SELECT p.productId, productName, productDescription, c.quantity, price, discount, sp.sellerId '
+         'FROM Cart AS c, SellerProduct AS sp, Product AS p '
+         'WHERE c.userId = ? AND c.productId = sp.productId AND c.sellerId = sp.sellerId AND p.productId = c.productId'),
+        (user_id, )).fetchall()
     if len(productsData) == 0:
         flash('Cannot checkout empty cart!')
         return redirect(url_for('user.cart'))
@@ -172,9 +174,10 @@ def checkout():
             product[key] = productData[key]
         price = product['price']
         disc = product['discount']
+        quantity = product['quantity']
         discounted_price = price * (100 - disc) / 100
         product['discountedPrice'] = discounted_price
-        totalPrice += discounted_price
+        totalPrice += discounted_price * quantity
         products.append(product)
     totalPrice = int(totalPrice)
 

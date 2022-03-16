@@ -18,8 +18,8 @@
                     <th scope="row">{{product['productName']}}</td>
                     <td>{{product['quantity']}}</td>
                     <td>
-                        ₹ <div class="d-inline text-decoration-line-through">{{product['price']}}</div>
-                        ₹ <div class="d-inline ps-2">{{product['discountedPrice']}}</div>
+                        <div class="d-inline text-decoration-line-through">₹ {{product['price']}}</div>
+                        <div class="d-inline ps-2">₹ {{product['discountedPrice']}}</div>
                     </td>
                 </tr>
                 {% endfor %}
