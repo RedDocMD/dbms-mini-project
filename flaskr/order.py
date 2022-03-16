@@ -130,11 +130,37 @@ def checkout():
     user_id = g.user['userId']
 
     productsData = db.execute(
-        ('SELECT productName, productDescription, c.quantity, price, discount FROM Cart AS c, SellerProduct AS sp, Product AS p '
+        ('SELECT productName, productDescription, c.quantity, price, discount, sp.sellerId FROM Cart AS c, SellerProduct AS sp, Product AS p '
          'WHERE c.userId = ? AND c.productId = sp.productId AND c.sellerId = sp.sellerId AND p.productId = c.productId'), (user_id, )).fetchall()
     if len(productsData) == 0:
         flash('Cannot checkout empty cart!')
         return redirect(url_for('user.cart'))
+    # productsData = [
+    #     {
+    #         "productName": "Lays",
+    #         "productDescription": "80%% off bolna chahihye, utna hawa hai",
+    #         "quantity": 2,
+    #         "price": 50,
+    #         "discount": 5,
+    #         "productId": 1,
+    #     },
+    #     {
+    #         "productName": "Kurkure",
+    #         "productDescription": "Desi chips, plastic hai apparently",
+    #         "quantity": 2,
+    #         "price": 30,
+    #         "discount": 0,
+    #         "productId": 2,
+    #     },
+    #     {
+    #         "productName": "Novel",
+    #         "productDescription": "Yeh kaisa book ka naam hai?",
+    #         "quantity": 1,
+    #         "price": 500,
+    #         "discount": 15,
+    #         "productId": 3,
+    #     },
+    # ]
 
     addresses = db.execute(
         'SELECT * FROM UserAddress WHERE userId = ?', (user_id, )).fetchall()
@@ -150,5 +176,31 @@ def checkout():
         product['discountedPrice'] = discounted_price
         totalPrice += discounted_price
         products.append(product)
+    totalPrice = int(totalPrice)
 
+    if request.method == 'POST':
+        address_id = request.form['selected_address']
+        errors = []
+        if not address_id:
+            errors.append('You must select address')
+        if len(errors) == 0:
+            try:
+                cursor = db.execute('INSERT INTO Orders (userId, addressId, totalCost) VALUES (?, ?, ?)',
+                                    (g.user['userId'], address_id, totalPrice))
+                order_id = cursor.lastrowid
+                for product in products:
+                    db.execute(
+                        ('INSERT INTO OrderProduct (orderId, productId, productName, originalPrice, discountPrice, sellerId, quantity) '
+                         'VALUES (?, ?, ?, ?, ?, ?, ?)'),
+                        (order_id, product['productId'], product['productName'], product['price'], product['discountedPrice'], product['sellerId'], product['quantity']))
+                db.execute('DELETE FROM Cart WHERE userId = ?',
+                           (g.user['userId'], ))
+                db.commit()
+            except db.IntegrityError as e:
+                errors.append(f'Failed to checkout: {e}')
+            else:
+                return redirect('/')
+
+            for error in errors:
+                flash(error)
     return render_template('checkout.html', products=products, addresses=addresses, totalPrice=totalPrice)

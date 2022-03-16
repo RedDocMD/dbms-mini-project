@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+{% block main %}
+<div class="container">
+    <h1 class="display-4 pt-4 text-center">Checkout</h1>
+    <div class="mt-5 pt-4 pb-4">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <th scope="row">{{product['productName']}}</td>
+                    <td>{{product['quantity']}}</td>
+                    <td>
+                        ₹
+                        <div class="d-inline text-decoration-line-through">{{product['price']}}</div>
+                        <div class="d-inline ps-2">{{product['discountedPrice']}}</div>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <th scope="row" colspan="2">
+                        <div class="d-flex flex-row-reverse me-4">
+                            Total
+                        </div>
+                        </td>
+                    <td>₹{{totalPrice}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <form method="post">
+        <div class="row">
+            <div class="col-8">
+                <div class="fw-bold pb-4 pt-3">Choose Address</div>
+                <ul class="list-group">
+                    {% for address in addresses %}
+                    <li class="list-group-item">
+                        <input class="form-check-input me-1" type="radio" name="selected_address"
+                            value={{address['addressId']}}>
+                        <div class="d-inline">{{address['addressName']}}</div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col d-flex justify-content-end align-items-end">
+                <button type="input" class="btn btn-primary">
+                    Checkout
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
