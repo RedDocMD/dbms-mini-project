@@ -84,110 +84,112 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    Orders
-                                </button>
-                            </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                                data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <div class="list-group">
-                                        {% for order in user.orders %}
-                                        <div class="list-group-item">
-                                            <div class="d-flex flex-row align-items-center">
-                                                <div class="flex-fill">
-                                                    Number of items: {{order.numItems}}
-                                                </div>
-                                                <div class="flex-fill d-flex justify-content-center">
-                                                    <div class="d-inline">Cost:</div>
-                                                    <div class="d-inline ps-1 fw-bolder">₹{{order.cost}}</div>
-                                                </div>
-                                                <div class="flex-fill d-flex flex-row-reverse">
-                                                    <button class="btn btn-danger mx-2"
-                                                        onclick="delete_order({{order.order_id}})">
-                                                        <i class="bi bi-trash"></i>
-                                                        Delete Order
-                                                    </button>
-                                                    <a class="btn btn-primary mx-2"
-                                                        href={{ url_for('order.order', order_id = order.order_id)}}>
-                                                        See Order
-                                                    </a>
-                                                </div>
-                                            </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Orders
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <div class="list-group">
+                                {% for order in user.orders %}
+                                <div class="list-group-item">
+                                    <div class="d-flex flex-row align-items-center">
+                                        <div class="flex-fill">
+                                            Number of items: {{order.numItems}}
                                         </div>
-                                        {% endfor %}
+                                        <div class="flex-fill d-flex justify-content-center">
+                                            <div class="d-inline">Cost:</div>
+                                            <div class="d-inline ps-1 fw-bolder">₹{{order.cost}}</div>
+                                        </div>
+                                        <div class="flex-fill d-flex flex-row-reverse">
+                                            <button class="btn btn-danger mx-2"
+                                                onclick="delete_order({{order.order_id}})">
+                                                <i class="bi bi-trash"></i>
+                                                Delete Order
+                                            </button>
+                                            <a class="btn btn-primary mx-2"
+                                                href={{ url_for('order.order', order_id = order.order_id)}}>
+                                                See Order
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
-                    {% elif user.userType == "SLR" %}
-                    <div class="text-center">
-                        <h3 class="text-center">
-                            List of Items sold by you
-                        </h3>
-                    </div>
-                    <div class="list-group">
-                        {% for item in user['items'] %}
-                        <div class="list-group-item">
-                            <div class="d-flex flex-row align-items-center">
-                                <div class="flex-fill">
-                                    {{item.name}}
-                                </div>
-                                <div class="flex-fill d-flex flex-row-reverse">
-                                    <button class="btn btn-danger mx-2" onclick="delete_product({{item.product_id}})">
-                                        <i class="bi bi-trash"></i>
-                                        Delete Item
-                                    </button>
-                                    <a class="btn btn-primary mx-2"
-                                        href={{url_for('item.edit', product_id=item['product_id'])}}>
-                                        <i class="bi bi-pencil"></i>
-                                        Edit Item
-                                    </a>
-                                </div>
-                            </div>
+                </div>
+            </div>
+            {% elif user.userType == "SLR" %}
+            <div class="text-center">
+                <h3 class="text-center">
+                    List of Items sold by you
+                </h3>
+            </div>
+            <div class="list-group">
+                {% for item in user['items'] %}
+                <div class="list-group-item">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="flex-fill">
+                            {{item.name}}
                         </div>
-                        {% endfor %}
-                    </div>
-                    <div class="text-center mt-3">
-                        <a class="btn btn-primary" href={{url_for('item.add')}}>
-                            Add Item
-                        </a>
-                    </div>
-                    {% elif user.userType == "ADM" %}
-                    <div class="text-center">
-                        <h3 class="text-center">
-                            List of Sellers
-                    </div>
-                    <div class="list-group">
-                        {% for seller in user['sellers'] %}
-                        <div class="list-group-item">
-                            <div class="d-flex flex-row align-items-center">
-                                <div class="flex-fill">
-                                    {{seller.name}}
-                                </div>
-                                <div class="flex-fill d-flex flex-row-reverse">
-                                    <button class="btn btn-danger mx-2" onclick="delete_seller({{seller.seller_id}})">
-                                        <i class="bi bi-trash"></i>
-                                        Delete Seller
-                                    </button>
-                                    <button class="btn btn-primary mx-2">
-                                        Edit Seller
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="flex-fill d-flex flex-row-reverse">
+                            <button class="btn btn-danger mx-2" onclick="delete_product({{item.product_id}})">
+                                <i class="bi bi-trash"></i>
+                                Delete Item
+                            </button>
+                            <a class="btn btn-primary mx-2"
+                                href={{url_for('item.edit', product_id=item['product_id'])}}>
+                                <i class="bi bi-pencil"></i>
+                                Edit Item
+                            </a>
                         </div>
-                        {% endfor %}
                     </div>
-                    <div class="text-center mt-3">
-                        <a class="btn btn-primary" href={{ url_for('auth.register_seller') }}>
-                            Add Seller
-                        </a>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-3">
+                <a class="btn btn-primary" href={{url_for('item.add')}}>
+                    Add Item
+                </a>
+            </div>
+            {% elif user.userType == "ADM" %}
+            <div class="text-center">
+                <h3 class="text-center">
+                    List of Sellers
+            </div>
+            <div class="list-group">
+                {% for seller in user['sellers'] %}
+                <div class="list-group-item">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="flex-fill">
+                            {{seller.name}}
+                        </div>
+                        <div class="flex-fill d-flex flex-row-reverse">
+                            <button class="btn btn-danger mx-2" onclick="delete_seller({{seller.seller_id}})">
+                                <i class="bi bi-trash"></i>
+                                Delete Seller
+                            </button>
+                            <button class="btn btn-primary mx-2">
+                                Edit Seller
+                            </button>
+                        </div>
                     </div>
-                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-3">
+                <a class="btn btn-primary" href={{ url_for('auth.register_seller') }}>
+                    Add Seller
+                </a>
+            </div>
+            {% endif %}
         </div>
     </div>
 
