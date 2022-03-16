@@ -7,13 +7,11 @@ import functools
 
 bp = Blueprint('order', __name__, url_prefix='/order')
 
-@bp.route('', methods=['GET'])
+@bp.route('/<order_id>', methods=['GET'])
 @login_required
-def order():
+def order(order_id):
     if request.method == 'GET':
-        order_id = request.args.get('order_id')
         print(order_id)
-
         user = {
             "fullName": "John Doe",
             "emailAddress": "xyz@gmail.com",
@@ -55,6 +53,51 @@ def order():
             "cost": 6000,
             "address": "1-a, Torana Apartments, Sahar Rd, Opp. P & T Colony, Andheri(e), Mumbai",
         }
+
+        db = get_db()
+        user_id = g.user['userId']
+        user = {}
+        order = {}
+
+        userData = db.execute((
+        'SELECT * '
+        'FROM USER u '
+        'WHERE u.userId = ?'
+        ), (user_id,)).fetchone()
+
+        user['fullName'] = userData['fullName']
+        user['emailAddress'] = userData['emailAddress']
+        addressData = db.execute(
+            'SELECT ua.addressName '
+            'FROM Orders AS o, UserAddress as ua '
+            'WHERE o.orderId = ? AND ua.userId = ? AND ua.addressId = o.addressId'
+        ,(order_id, user_id, )).fetchone()
+
+        order['address'] = addressData['addressName']
+
+        orderData = db.execute(
+            'SELECT * '
+            'FROM Orders '
+            'WHERE orderId = ?'
+        , (order_id, )).fetchone()
+        
+        order['cost'] = orderData['totalCost']
+
+        orderProductData = db.execute(
+            'SELECT * '
+            'FROM OrderProduct '
+            'WHERE orderId = ? '
+        , (order_id)).fetchall()
+
+        order['items'] = []
+        for row in orderProductData:
+            order['items'].append({
+                "name": row["productName"],
+                "quantity": row["quantity"],
+                "cost": row["discountPrice"],
+            })
+
+
 
         return render_template('orderSummary.html', user = user, order = order)
         
