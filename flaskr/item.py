@@ -36,4 +36,32 @@ def add():
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
+    if g.user['userType'] != 'SLR':
+        return redirect('/')
+    if request.method == 'POST':
+        db = get_db()
+        user_id = g.user['userId']
+
+        name = request.form['name']
+        desc = request.form['desc']
+        price = request.form['price']
+        disc = request.form['discount']
+        qty = request.form['quantity']
+
+        errors = []
+        try:
+            prod_cursor = db.execute(
+                'INSERT INTO Product (productName, productDescription) VALUES (?, ?)', (name, desc))
+            prod_id = prod_cursor.lastrowid
+            db.execute(
+                'INSERT INTO SellerProduct (productId, sellerId, price, discount, quantity) VALUES (?, ?, ?, ?, ?)',
+                (prod_id, user_id, price, disc, qty))
+            db.commit()
+        except db.IntegrityError as e:
+            errors.append(f'Failed to add {e}')
+        else:
+            return redirect(url_for('user.profile'))
+
+        for error in errors:
+            flash(error)
     return render_template('add_new_item.html')

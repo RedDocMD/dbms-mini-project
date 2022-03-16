@@ -11,6 +11,21 @@
                 <h1 class="display-4 text-center">Create Product</h1>
             </div>
         </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-4">
+                <div class="alert alert-danger" role="alert">
+                    {{message}}
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
         <div class="row pt-4">
             <div class="col"></div>
             <div class="col-6">
