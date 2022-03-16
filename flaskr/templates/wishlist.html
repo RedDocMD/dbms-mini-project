@@ -13,47 +13,44 @@
     </div>
     <div id="sellers"></div>
     <div class="wishlist_cont container">
-        <ul style="list-style-type: none;">
-            {# <li class="pt-4">
-                <div class="card">
-                    <div class="card-header">
-                       product name
-                      </div>
-                      <div class="card-body">
-                        <h5 class="card-title"><s>product price</s> discounted price</h5>
-                        <p class="card-text">product description loren ipsum lara lassan</p>
-                        <a href="#" name="{{ product.prodId }}" class="add-cart-btn btn btn-primary">Add to Cart</a>
-                        <button name="{{ product.prodId }}" class="rem-wishlist-btn btn btn-primary">Remove from Wishlist</button>
-                      </div>
-                </div>
-            </li> #}
-            {% for product in products %}
-            <li class="pt-4">
-                <div class="card">
-                    <div class="card-header">
-                        {{ product.name }}
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title"><s>₹ {{prices[product['productId']]}}</s> ₹
-                            {{discounted_prices[product['productId']]}}</h5>
-                        <p class="card-text">{{ product["productDescription"] }}</p>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-6">
+                <ul style="list-style-type: none;">
+                    {% for product in products %}
+                    <li class="pt-4">
+                        <div class="card">
+                            <div class="card-header">
+                                {{ product['productName'] }}
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">{{ product["productDescription"] }}</p>
 
-                        <form method="get" action="{{url_for('user.wishlist')}}">
-                            <input type="hidden" value="{{product['productId']}}" name="prodId" />
-                            <button type="submit" name="{{product['productId']}}" class="add-cart-btn btn-primary">Add
-                                to Cart</button>
-                        </form>
+                                <div class="d-flex justify-content-between pt-2">
+                                    <form class="d-inline" method="get" action="{{url_for('user.showseller')}}">
+                                        <input type="hidden" value="{{product['productId']}}" name="prodId" />
+                                        <button type="submit" class="add-cart-btn btn-primary btn">
+                                            <i class="bi bi-plus-circle pe-1"></i>
+                                            Add to Cart
+                                        </button>
+                                    </form>
 
-                        <form class="pt-2" method="get" action="{{url_for('user.wishlist')}}">
-                            <input type="hidden" value="{{product['productId']}}" name="prodId" />
-                            <button type="submit" name="{{product['productId']}}"
-                                class="rem-wishlist-btn btn-danger btn-primary">Remove from Wishlist</button>
-                        </form>
-                    </div>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
+                                    <form class="d-inline" method="get" action="{{url_for('user.wishlist')}}">
+                                        <input type="hidden" value="{{product['productId']}}" name="prodId" />
+                                        <button type="submit" class="rem-wishlist-btn btn btn-danger btn-primary">
+                                            <i class="bi bi-trash pe-1"></i>
+                                            Remove from Wishlist
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col"></div>
+        </div>
     </div>
 </div>
 {% endblock %}

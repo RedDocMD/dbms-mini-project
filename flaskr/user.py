@@ -134,8 +134,8 @@ def showseller():
     if (request.method == 'GET'):
         user_id = g.user['userId']
         db = get_db()
-        prodId = request.form.get('prodId')
-        print("Reached here")
+        prodId = request.args['prodId']
+        print(f"Reached here: {prodId}")
         # select sellers for that product
         # render the sellerlist.html and return the page
         # catch the response in the ajax reciever functions and render it in the empty div
@@ -143,8 +143,8 @@ def showseller():
             ('SELECT productId, productName, productDescription '
              'FROM Product WHERE productId = ?'), (prodId, )).fetchone()
 
-        if(prod is None):
-            return redirect("/user/wishlist", code=200)
+        if prod is None:
+            return redirect(url_for('user.wishlist'))
 
         sellers = db.execute(
             ('SELECT sp.sellerId, sp.productId, sp.discount, sp.price, u.fullName '
@@ -185,20 +185,15 @@ def wishlisttocart():
         db.execute(
             ('DELETE FROM Wishlist '
              'WHERE productId = ? AND userId = ? '), (prodId, user_id))
-
-        db.commit()
-
         db.execute(
             ('INSERT INTO Cart '
              'VALUES (?,?,?,1) '), (user_id, prodId, sellerId)
         )
-
         db.commit()
 
-        return redirect("/user/wishlist", code=200)
-
+        return redirect(url_for('user.wishlist'))
     else:
-        return redirect("/user/wishlist", code=200)
+        return redirect(url_for('user.wishlist'))
 
 
 @bp.route('/browse', methods=['GET', 'POST'])
