@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Create Product{% endblock %}
+
+{% block main %}
+
+<form method="post">
+    <div class="container">
+        <div class="row pt-4">
+            <div class="col">
+                <h1 class="display-4 text-center">Create Product</h1>
+            </div>
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-4">
+                <div class="alert alert-danger" role="alert">
+                    {{message}}
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <div class="row pt-4">
+            <div class="col"></div>
+            <div class="col-6">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" name="name">
+                </div>
+                <div class="mb-3">
+                    <label for="desc" class="form-label">Description</label>
+                    <textarea class="form-control" id="desc" name="desc" rows="5"></textarea>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row mb-4">
+            <div class="col"></div>
+            <div class="col-2">
+                <div class="d-flex">
+                    <label for="price" class="col-form-label pe-2">Price</label>
+                    <input type="number" class="form-control" id="price" name="price">
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="d-flex">
+                    <label for="discount" class="col-form-label pe-2">Discount</label>
+                    <input type="number" class="form-control" id="discount" name="discount">
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="d-flex">
+                    <label for="quantity" class="col-form-label pe-2">Quantity</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity">
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-4">
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary">Create</button>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}

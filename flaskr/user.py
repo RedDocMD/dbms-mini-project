@@ -88,10 +88,10 @@ def profile():
     #             "address_id": 2
     #         },
     #         {
-    #             "addressName": "4, Jaya Niwas, Goraswadi, Near Milap Talkies, Malad (west)", 
+    #             "addressName": "4, Jaya Niwas, Goraswadi, Near Milap Talkies, Malad (west)",
     #             "address_id": 3
     #         }
-               
+
     #     ],
     #     "orders":[
     #         {
@@ -157,7 +157,7 @@ def profile():
 
     if user is None:
         error = "User doesn't exist"
-    
+
     if error is None:
         user['fullName'] = userData['fullName']
         user['emailAddress'] = userData['emailAddress']
@@ -181,7 +181,7 @@ def profile():
             user['addressNames'] = addresses
 
             user['orders'] = []
-            return render_template('profile.html', user = user)
+            return render_template('profile.html', user=user)
         elif userType == 'SLR':
             items = []
             itemData = db.execute((
@@ -198,7 +198,7 @@ def profile():
                     }
                 )
             user['items'] = items
-            return render_template('profile.html', user = user)
+            return render_template('profile.html', user=user)
         elif userType == 'ADM':
             sellers = []
             sellerData = db.execute((
@@ -215,7 +215,7 @@ def profile():
                     }
                 )
             user['sellers'] = sellers
-            return render_template('profile.html', user = user)
+            return render_template('profile.html', user=user)
     flash(error)
 
 
@@ -237,6 +237,7 @@ def deleteSeller():
         db.commit()
         return "", 201
 
+
 @bp.route('/deleteAddress', methods=['POST'])
 @login_required
 def deleteAddress():
@@ -255,23 +256,3 @@ def deleteAddress():
         ), (user_id, address_id,))
         db.commit()
         return "", 201
-
-@bp.route('/deleteProduct', methods=['POST'])
-@login_required
-def deleteItem():
-    if request.method == 'POST':
-        try:
-            product_id = request.form['product_id']
-            user_id = g.user['userId']
-        except:
-            return ""
-        db = get_db()
-
-        db.execute((
-            'DELETE '
-            'FROM SellerProduct '
-            'WHERE sellerId = ? and productId = ?'
-        ), (user_id, product_id,))
-        db.commit()
-        return "", 201
-
