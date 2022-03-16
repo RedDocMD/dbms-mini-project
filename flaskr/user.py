@@ -438,6 +438,24 @@ def profile():
             user['addressNames'] = addresses
 
             user['orders'] = []
+            orderData = db.execute((
+                'SELECT orderId, totalCost '
+                'FROM Orders '
+                'WHERE userId = ?'
+            ), (user_id)).fetchall()
+            for row in orderData:
+                orderId = row['orderId']
+                orderProductData = db.execute((
+                    'SELECT COUNT(*) AS numItems '
+                    'FROM OrderProduct '
+                    'WHERE orderId = ?'
+                ),(orderId)).fetchone()
+                numItems = orderProductData["numItems"]
+                user['orders'].append({
+                    "numItems": numItems,
+                    "order_id": orderId,
+                    "cost": row["totalCost"]
+                })
             return render_template('profile.html', user=user)
         elif userType == 'SLR':
             items = []

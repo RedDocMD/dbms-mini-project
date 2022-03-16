@@ -47,7 +47,7 @@ CREATE TABLE SellerProduct (
     quantity INT DEFAULT 1,
     PRIMARY KEY (productId, sellerId),
     FOREIGN KEY (productId) REFERENCES Product(productId),
-    FOREIGN KEY (sellerId) REFERENCES User(userId)
+    FOREIGN KEY (sellerId) REFERENCES User(userId) ON CASCADE DELETE
 );
 
 CREATE TABLE Orders (
