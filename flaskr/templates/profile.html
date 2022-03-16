@@ -7,7 +7,8 @@
         $.post("deleteSeller", {
             'seller_id': seller_id,
         });
-
+        location.reload()
+                
     }
 
     function delete_address(address_id) {
@@ -15,6 +16,7 @@
         $.post("deleteAddress", {
             'address_id': address_id,
         });
+        location.reload()
     }
 
     function delete_order(order_id) {
@@ -22,6 +24,7 @@
         $.post("../order/deleteOrder", {
             'order_id': order_id,
         });
+        location.reload()
     }
 
     function delete_product(product_id) {
@@ -29,6 +32,7 @@
         $.post("/item/delete", {
             'product_id': product_id,
         });
+        location.reload()
     }
 </script>
 <div class="container pt-3 my-3">

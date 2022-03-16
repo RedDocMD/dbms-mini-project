@@ -237,7 +237,7 @@ def deleteSeller():
         db.commit()
         return "", 201
 
-@bp.route('/add', methods=['GET','POST'])
+@bp.route('/addAddress', methods=['GET','POST'])
 @login_required
 def addAddress():
     if request.method == 'POST':
@@ -271,7 +271,7 @@ def addAddress():
             flash(error)
     return render_template('addAddress.html')
 
-@bp.route('/edit/<address_id>', methods=['GET','POST'])
+@bp.route('/editAddress/<address_id>', methods=['GET','POST'])
 @login_required
 def editAddress(address_id):
     db = get_db()
@@ -305,10 +305,9 @@ def editAddress(address_id):
         'FROM UserAddress AS ua '
         'WHERE ua.userId = ? AND ua.addressId = ?'
     ,(g.user['userId'], address_id)).fetchone()
-    address = {
-        "addressName": addressData["addressName"]
-    }
-    return render_template('editAddress.html', address=address)
+
+    print(addressData["addressName"])
+    return render_template('editAddress.html', address=addressData)
 
 @bp.route('/deleteAddress', methods=['POST'])
 @login_required
