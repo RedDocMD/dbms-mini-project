@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Pick a Seller{% endblock %}
+
+{% block main %}
+<div class="sellerlist container-fluid" >
+    <div class="sellerlist_header container">
+        <p class="display-3 pt-4 text-center">Pick A Seller</h3>
+        <p class="h4 pt-4 text-center">Product Name : {{productName}}</p>
+        <p class="h4 pt-4 text-center text-muted">Product ID : {{productID}}</p>
+        <p class="h4 pt-4 text-center">Product Description : {{productDescription}}</p>
+    </div>
+    
+    <div class="seller_cont container">
+        <form method="get" action="{{url_for('user.wishlisttocart')}}">
+            {% for seller in sellers %}
+                <input type="radio" name="seller" value="{{seller['sellerId']}}"> Name: {{seller['sellerName']}}  Discounted Price: {{seller['discountedPrice']}}  Original Price: {{seller['price']}}
+            {% endfor %}
+                <input type="hidden" name="prod" value="{{productID}}" />
+                <button type="submit" class="btn-success btn-lg mx-auto">Add to Cart</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

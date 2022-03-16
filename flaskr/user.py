@@ -2,58 +2,321 @@ from flask import (Blueprint, render_template,
                    g, request, redirect, url_for, flash, session)
 from flaskr.db import get_db
 from flaskr.auth import login_required
+import json
 
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 
 
-@bp.route('/cart', methods=['GET'])
+@bp.route('/cart', methods=['GET', 'POST'])
 @login_required
 def cart():
-    db = get_db()
-    user_id = g.user['userId']
+    if (request.method == 'POST') :
+        print(request.form['type'])
+        user_id = g.user['userId']
+        db = get_db()
+        if(request.form['type'] == 'Q') :
+            print("Quantity change...")
+            prodId = request.form['prodId']
+            sellerId = request.form['sellerId']
+            newQ = request.form['newQ']
+            db.execute(
+                ('UPDATE Cart '
+                'SET quantity = ? '
+                'WHERE userId = ? AND productId = ? AND sellerId = ?'), (newQ, user_id, prodId, sellerId))
+            db.commit()
+            return "", 201
 
-    productsData = db.execute(
-        ('SELECT p.productId, p.productName, p.productDescription, c.quantity, sp.price, sp.discount  '
-         'FROM Product p, Cart c, SellerProduct sp '
-         'WHERE p.productId = c.productId AND c.userId = ? AND sp.productId = p.productId'), (user_id,)).fetchall()
+        elif(request.form['type'] == 'R') :
+            print("Remove from cart...")
+            prodId = request.form['prodId']
+            sellerId = request.form['sellerId']
+            db.execute(
+                ('DELETE FROM Cart '
+                'WHERE userId = ? AND productId = ? AND sellerId = ?'),(user_id, prodId, sellerId))
+            db.commit()
+            productsData = db.execute(
+                ('SELECT DISTINCT p.productId, p.productName, p.productDescription, c.quantity, sp.price, sp.discount  '
+                'FROM Product p, Cart c, SellerProduct sp '
+                'WHERE p.productId = c.productId AND c.userId = ? AND sp.productId = p.productId'), (user_id,)).fetchall()
 
-    products = []
-    prices = {}
-    discounted_prices = {}
+            products = []
+            prices = {}
+            discounted_prices = {}
 
-    for row in productsData:
-        product = {
-            'productId': row['productId'],
-            'productName': row['productName'],
-            'productDescription': row['productDescription']
-        }
-        products.append(product)
-        price = row['price']
-        discount = row['discount']
-        prices[product['productId']] = price
-        discounted_prices[product['productId']] = int(price *
-                                                      (100.0 - discount) / 100.0)
+            for row in productsData:
+                product = {
+                    'productId': row['productId'],
+                    'productName': row['productName'],
+                    'productDescription': row['productDescription']
+                }
+                products.append(product)
+                price = row['price']
+                discount = row['discount']
+                prices[product['productId']] = price
+                discounted_prices[product['productId']] = int(price *
+                                                            (100.0 - discount) / 100.0)
 
-    return render_template('cart.html',
-                           products=products, prices=prices, discounted_prices=discounted_prices)
+            return render_template('cart.html',
+                                products=products, prices=prices, discounted_prices=discounted_prices)
 
+    else:
+        db = get_db()
+        user_id = g.user['userId']
+        all_prods = db.execute(
+            ('SELECT DISTINCT p.productId, p.productName, p.productDescription, sp.sellerId, u.fullName, sp.price, sp.discount '
+            'FROM Product p, SellerProduct sp, User u '
+            'WHERE p.productId = sp.productId AND sp.sellerId = u.userId ')).fetchall()
+        
+        products = []
+        prices = {}
+        discounted_prices = {}
+
+        for row in all_prods:
+            product = {
+                'productId': row['productId'],
+                'productName': row['productName'],
+                'productDescription': row['productDescription'],
+                'sellerId': row['sellerId'],
+                'sellerName': row['fullName']
+            }
+            products.append(product)
+            price = row['price']
+            discount = row['discount']
+            prices[product['productId']] = price
+            discounted_prices[product['productId']] = int(price *
+                                                        (100.0 - discount) / 100.0)
+
+        return render_template('cart.html', products=products, prices=prices, discounted_prices=discounted_prices)
+
+
+
+        
 
 @bp.route('/wishlist', methods=['GET'])
 @login_required
 def wishlist():
-    db = get_db()
-    user_id = g.user['userId']
+    if (request.method == 'GET') :
+        prodId = str(request.args.get('prodId',""))
+        db = get_db()
+        user_id = g.user['userId']
 
-    products = db.execute(
-        (
-            'SELECT p.productId, p.productName, p.productDescription '
-            'FROM Wishlist w, Product p '
-            'WHERE p.productId = w.productId AND w.userId = ?'
-        ), (user_id, )
-    ).fetchall()
+        productsData = []
+        if(prodId == "") :
+            productsData = db.execute(
+                ('SELECT DISTINCT p.productId, p.productName, p.productDescription  '
+                'FROM Product p, Wishlist w '
+                'WHERE p.productId = w.productId AND w.userId = ? AND w.productId = p.productId'), (user_id,)).fetchall()
+        else :
 
-    return render_template('wishlist.html', products=products)
+            db.execute(
+                ('DELETE FROM Wishlist '
+                'WHERE productId = ? AND userId = ?'), (prodId, user_id))
+
+            db.commit()
+
+            productsData = db.execute(
+                ('SELECT DISTINCT p.productId, p.productName, p.productDescription  '
+                'FROM Product p, Wishlist w '
+                'WHERE p.productId = w.productId AND w.userId = ? AND w.productId = p.productId'), (user_id,)).fetchall()
+
+        products = []
+
+        for row in productsData:
+            product = {
+                'productId': row['productId'],
+                'productName': row['productName'],
+                'productDescription': row['productDescription']
+            }
+            products.append(product)
+
+        return render_template('wishlist.html',
+                            products=products)
+
+
+@bp.route('/showseller', methods=['GET'])
+@login_required
+def showseller():
+    if (request.method == 'GET') :
+        user_id = g.user['userId']
+        db = get_db()
+        prodId = request.form.get('prodId')
+        print("Reached here")
+        # select sellers for that product
+        # render the sellerlist.html and return the page
+        # catch the response in the ajax reciever functions and render it in the empty div
+        prod = db.execute(
+            ('SELECT productId, productName, productDescription '
+            'FROM Product WHERE productId = ?'), (prodId, )).fetchone()
+        
+        if(prod is None):
+            return redirect("/user/wishlist", code=200)
+
+        sellers = db.execute(
+            ('SELECT sp.sellerId, sp.productId, sp.discount, sp.price, u.fullName '
+            'FROM SellerProduct sp, User u '
+            'WHERE u.userId = sp.sellerId AND sp.productId = ? '), (prodId,)).fetchall()
+
+        sellerinfo = []
+        for row in sellers:
+            price = row['price']
+            discount = row['discount']
+            discounted_price = int(price * (100.0 - discount) / 100.0)
+            seller = {
+                'sellerId': row['sellerId'],
+                'name': row['fullName'],
+                'prodId': row['productId'],
+                'price': row['price'],
+                'discountedPrice': discounted_price
+            }
+            sellerinfo.append(seller)
+        
+        return render_template("sellerlist.html", sellers=sellerinfo, productName=prod['productName'], productID=prod['productId'], productDescription=prod['productDescription'])
+    else :
+        return "",200
+
+@bp.route('/wishlisttocart', methods=['GET'])
+@login_required
+def wishlisttocart():
+    if (request.method == 'GET') :
+        user_id = g.user['userId']
+        db = get_db()
+        sellerId = request.form.get('seller')
+        prodId = request.form.get('prod')
+
+        # delete from wishlist 
+        # add to cart
+        # return to wishlist
+        db.execute(
+            ('DELETE FROM Wishlist '
+            'WHERE productId = ? AND userId = ? '), (prodId, user_id))
+        
+        db.commit()
+
+        db.execute(
+            ('INSERT INTO Cart '
+            'VALUES (?,?,?,1) '), (user_id, prodId, sellerId)
+        )
+
+        db.commit()
+
+        return redirect("/user/wishlist", code=200)
+
+    else :
+        return redirect("/user/wishlist", code=200)
+
+
+@bp.route('/browse', methods=['GET', 'POST'])
+@login_required
+def browse():
+    if (request.method == 'POST') :
+        user_id = g.user['userId']
+        db = get_db()
+        if (request.form['type'] == 'IC') :
+            # check if already there then increment quantity or insert if not there
+            prodId = request.form['prodId']
+            sellerId = request.form['sellerId']
+
+            db.execute(
+                ('INSERT INTO Cart '
+                'VALUES (?,?,?,1) '
+                'ON CONFLICT(userId, productId, sellerId) '
+                'DO UPDATE SET quantity = quantity + 1 '), (user_id, prodId, sellerId)
+            )
+            db.commit()
+            return "", 200
+        elif (request.form['type'] == 'IW') :
+            prodId = request.form['prodId']
+
+            db.execute(
+                ('INSERT OR IGNORE INTO Wishlist '
+                'VALUES (?,?) '), (user_id, prodId)
+            )
+            db.commit()
+            return "", 200
+        else:
+            print("WARNING : Invalid request.")
+            return "", 200
+    else:
+        db = get_db()
+
+        search_key = str(request.args.get('searchStr',""))
+        print(search_key)
+        search_term = '%' + search_key + '%'
+        print(search_term)
+
+        all_prods = []
+
+        if(search_key == ""):
+            all_prods = db.execute(
+                ('SELECT DISTINCT p.productId, p.productName, p.productDescription, sp.sellerId, u.fullName, sp.price, sp.discount '
+                'FROM Product p, SellerProduct sp, User u '
+                'WHERE p.productId = sp.productId AND sp.sellerId = u.userId ')).fetchall()
+        else:
+            all_prods = db.execute(
+                ('SELECT p.productId, p.productName, p.productDescription, sp.sellerId, u.fullName, sp.price, sp.discount '
+                'FROM Product p, SellerProduct sp, User u '
+                'WHERE p.productName LIKE ? AND p.productId = sp.productId AND sp.sellerId = u.userId '), (search_term,)).fetchall()
+              
+        products = []
+        prices = {}
+        discounted_prices = {}
+
+        for row in all_prods:
+            product = {
+                'productId': row['productId'],
+                'productName': row['productName'],
+                'productDescription': row['productDescription'],
+                'sellerId': row['sellerId'],
+                'sellerName': row['fullName']
+            }
+            products.append(product)
+            price = row['price']
+            discount = row['discount']
+            prices[product['productId']] = price
+            discounted_prices[product['productId']] = int(price *
+                                                        (100.0 - discount) / 100.0)
+
+        return render_template('browse.html', products=products, prices=prices, discounted_prices=discounted_prices, searchStr=search_key)
+
+
+
+# @bp.route('/search', methods=['GET'])
+# @login_required
+# def search():
+#     #if (request.method == 'GET') :
+#     db = get_db()
+#     print(request.form)
+#     search_key = str(request.args.get('searchStr',""))
+#     print(search_key)
+#     search_term = '%' + search_key + '%'
+#     print(search_term)
+
+#     all_prods = db.execute(
+#         ('SELECT p.productId, p.productName, p.productDescription, sp.sellerId, u.fullName, sp.price, sp.discount '
+#         'FROM Product p, SellerProduct sp, User u '
+#         'WHERE p.productName LIKE ? AND p.productId = sp.productId AND sp.sellerId = u.userId '), (search_term,)).fetchall()
+    
+#     products = []
+#     prices = {}
+#     discounted_prices = {}
+    
+#     for row in all_prods:
+#         product = {
+#             'productId': row['productId'],
+#             'productName': row['productName'],
+#             'productDescription': row['productDescription'],
+#             'sellerId': row['sellerId'],
+#             'sellerName': row['fullName']
+#         }
+#         products.append(product)
+#         price = row['price']
+#         discount = row['discount']
+#         prices[product['productId']] = price
+#         discounted_prices[product['productId']] = int(price *
+#                                                     (100.0 - discount) / 100.0)
+    
+#     return render_template('browse.html', products=products, prices=prices, discounted_prices=discounted_prices, searchStr=search_key)
 
 
 @bp.route('/profile', methods=['GET'])
@@ -327,3 +590,23 @@ def deleteAddress():
         ), (user_id, address_id,))
         db.commit()
         return "", 201
+
+@bp.route('/deleteProduct', methods=['POST'])
+@login_required
+def deleteItem():
+    if request.method == 'POST':
+        try:
+            product_id = request.form['product_id']
+            user_id = g.user['userId']
+        except:
+            return ""
+        db = get_db()
+
+        db.execute((
+            'DELETE '
+            'FROM SellerProduct '
+            'WHERE sellerId = ? and productId = ?'
+        ), (user_id, product_id,))
+        db.commit()
+        return "", 201
+    

@@ -2,24 +2,51 @@
 {% block title %}Wishlist{% endblock %}
 
 {% block main %}
-<div class="wishlist container-fluid">
+<script>
+    $(document).ready(function () {
+
+    });
+</script>
+<div class="wishlist container-fluid" >
     <div class="wishlist_header container">
         <p class="display-3 pt-4 text-center">Your Wishlist</h3>
     </div>
+    <div id="sellers"></div>
     <div class="wishlist_cont container">
         <ul style="list-style-type: none;">
+            <li class="pt-4">
+                <div class="card">
+                    <div class="card-header">
+                       product name
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title"><s>product price</s> discounted price</h5>
+                        <p class="card-text">product description loren ipsum lara lassan</p>
+                        <a href="#" name="{{ product.prodId }}" class="add-cart-btn btn btn-primary">Add to Cart</a>
+                        <button name="{{ product.prodId }}" class="rem-wishlist-btn btn btn-primary">Remove from Wishlist</button>
+                      </div>
+                </div>
+            </li>
             {% for product in products %}
             <li class="pt-4">
                 <div class="card">
                     <div class="card-header">
-                        {{ product['name'] }}
-                    </div>
-                    <div class="card-body">
-                        {# <h5 class="card-title"><s>{{ product.price }}</s> {{ product.discount_price }}</h5> #}
-                        <p class="card-text">{{ product['description'] }}</p>
-                        <a href="#" class="btn btn-primary">Add to Cart</a>
-                        <a href="'#" class="btn btn-primary">Remove from Wishlist</a>
-                    </div>
+                       {{ product.name }}
+                      </div>
+                      <div class="card-body">
+                        <h5 class="card-title"><s>₹ {{prices[product['productId']]}}</s>   ₹ {{discounted_prices[product['productId']]}}</h5>
+                        <p class="card-text">{{ product["productDescription"] }}</p>
+                        
+                        <form method="get" action="{{url_for('user.wishlist')}}">
+                            <input type="hidden" value="{{product['productId']}}" name="prodId"/>
+                            <button type="submit" name="{{product['productId']}}" class="add-cart-btn btn-primary">Add to Cart</button>
+                        </form>
+
+                        <form class="pt-2" method="get" action="{{url_for('user.wishlist')}}">
+                            <input type="hidden" value="{{product['productId']}}" name="prodId"/>
+                            <button type="submit" name="{{product['productId']}}" class="rem-wishlist-btn btn-danger btn-primary">Remove from Wishlist</button>
+                        </form>
+                      </div>
                 </div>
             </li>
             {% endfor %}
