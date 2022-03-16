@@ -30,6 +30,7 @@ def login():
             fullName = user['fullName']
             nameParts = fullName.split(' ')
             session['firstName'] = nameParts[0]
+            session['userType'] = user['userType']
             g.user = user
             return redirect(url_for('user.profile'))
 
