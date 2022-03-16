@@ -7,13 +7,11 @@ import functools
 
 bp = Blueprint('order', __name__, url_prefix='/order')
 
-@bp.route('', methods=['GET'])
+@bp.route('/<order_id>', methods=['GET'])
 @login_required
-def order():
+def order(order_id):
     if request.method == 'GET':
-        order_id = request.args.get('order_id')
         print(order_id)
-
         user = {
             "fullName": "John Doe",
             "emailAddress": "xyz@gmail.com",
