@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Wishlist{% endblock %}
+{% block title %}Cart{% endblock %}
 
 {% block main %}
 <script>
@@ -45,6 +45,21 @@
     <div class="cart_header container">
         <p class="display-3 pt-4 text-center">Your Cart</h3>
     </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-4">
+            <div class="alert alert-danger" role="alert">
+                {{message}}
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
     <div class="cart_cont container">
         <ul style="list-style-type: none;">
             {% for product in products %}
@@ -72,7 +87,7 @@
             {% endfor %}
         </ul>
         <div class="d-grid mx-auto">
-            <button class="checkout-btn btn-success btn-lg mx-auto ">Confirm and Place Order</button>
+            <a class="btn-success btn mx-auto" href={{url_for('order.checkout')}}>Confirm and Place Order</a>
         </div>
     </div>
 </div>
