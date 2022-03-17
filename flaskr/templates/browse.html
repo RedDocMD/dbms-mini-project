@@ -8,50 +8,32 @@
             e.preventDefault();
             prodId = e.target.name.split(',')[0]
             sellerId = e.target.name.split(',')[1]
-            console.log(prodId)
-            console.log(sellerId)
-            $.post("/user/browse",
-            {
+            $.post("/user/browse", {
                 type: 'IC',
                 prodId: prodId,
                 sellerId: sellerId
-            }, function(){})
+            }, function () {})
         });
 
         $('.card-body').on('click', '.add-wishlist-btn', function (e) {
             e.preventDefault();
             prodId = e.target.name
-            $.post("/user/browse",
-            {
+            $.post("/user/browse", {
                 type: 'IW',
                 prodId: prodId,
-            }, function(){})
+            }, function () {})
         });
     });
 </script>
 <div class="browse-container container-fluid pt-4 mx-auto">
-        <div class="search-box input-group w-50 mx-auto">
-            <form class="input-group w-50 mx-auto" method="get" action="{{url_for('user.browse')}}"> 
+    <div class="search-box input-group w-50 mx-auto">
+        <form class="input-group w-50 mx-auto" method="get" action="{{url_for('user.browse')}}">
             <input type="text" name="searchStr" class="form-control" placeholder="Search" value="{{searchStr}}" />
             <button type="submit" class="search-btn btn btn-primary"><i class="bi bi-search"></i></a>
-            </form>
-        </div>
+        </form>
+    </div>
     <div class="container">
         <ul style="list-style-type: none;">
-            <!-- <li class="pt-4">
-                <div class="card">
-                    <div class="card-header">
-                       Product
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title"><s>product price</s>discount_price</h5>
-                        <p class="card-text">product description loren ipsum</p>
-                        <p class="card-text"><small class="text-muted">Sold By : Amazon</small></p>
-                        <a href="#" name="productId,sellerId" class="add-cart-btn btn btn-primary">Add to Cart</a>
-                        <a href="#" name="productId" class="add-wishlist-btn btn btn-primary">Add to Wishlist</a>
-                    </div>
-                </div>
-            </li> -->
             {% for product in products %}
             <li class="pt-4">
                 <div class="card">
@@ -59,11 +41,15 @@
                         {{product['productName']}}
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title"><s>₹ {{prices[product['productId']]}}</s>   ₹ {{discounted_prices[product['productId']]}}</h5>
+                        <h5 class="card-title"><s>₹ {{prices[product['productId']]}}</s> ₹
+                            {{discounted_prices[product['productId']]}}</h5>
                         <p class="card-text">{{product['productDescription']}}</p>
-                        <p class="card-text"><small class="text-muted">Sold By : {{ product['sellerName'] }} </small></p>
-                        <a href="#" name="{{product['productId']}},{{product['sellerId']}}" class="add-cart-btn btn btn-primary">Add to Cart</a>
-                        <a href="#" name="{{product['productId']}}" class="add-wishlist-btn btn btn-primary">Add to Wishlist</a>
+                        <p class="card-text"><small class="text-muted">Sold By : {{ product['sellerName'] }} </small>
+                        </p>
+                        <a href="#" name="{{product['productId']}},{{product['sellerId']}}"
+                            class="add-cart-btn btn btn-primary">Add to Cart</a>
+                        <a href="#" name="{{product['productId']}}" class="add-wishlist-btn btn btn-primary">Add to
+                            Wishlist</a>
                     </div>
                 </div>
             </li>

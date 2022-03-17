@@ -12,50 +12,6 @@ bp = Blueprint('order', __name__, url_prefix='/order')
 @login_required
 def order(order_id):
     if request.method == 'GET':
-        # print(order_id)
-        # user = {
-        #     "fullName": "John Doe",
-        #     "emailAddress": "xyz@gmail.com",
-        #     "userType": "ADM",
-        #     "sellers": [
-        #         {
-        #             "name": "John Cena",
-        #         },
-        #         {
-        #             "name": "Undertaker",
-        #         },
-        #         {
-        #             "name": "CM Punk",
-        #         },
-        #         {
-        #             "name": "Batista",
-        #         },
-        #     ],
-        # }
-
-        # order = {
-        #     "items": [
-        #         {
-        #             "name": "Lays",
-        #             "quantity": 2,
-        #             "cost": 1000,
-        #         },
-        #         {
-        #             "name": "Kurkure",
-        #             "quantity": 2,
-        #             "cost": 2000,
-        #         },
-        #         {
-        #             "name": "Novel",
-        #             "quantity": 1,
-        #             "cost": 3000,
-        #         },
-        #     ],
-        #     "cost": 6000,
-        #     "address": "1-a, Torana Apartments, Sahar Rd, Opp. P & T Colony, Andheri(e), Mumbai",
-        # }
-        # return render_template('orderSummary.html', user=user, order=order)
-
         db = get_db()
         user_id = g.user['userId']
         user = {}
@@ -137,32 +93,6 @@ def checkout():
     if len(productsData) == 0:
         flash('Cannot checkout empty cart!')
         return redirect(url_for('user.cart'))
-    # productsData = [
-    #     {
-    #         "productName": "Lays",
-    #         "productDescription": "80%% off bolna chahihye, utna hawa hai",
-    #         "quantity": 2,
-    #         "price": 50,
-    #         "discount": 5,
-    #         "productId": 1,
-    #     },
-    #     {
-    #         "productName": "Kurkure",
-    #         "productDescription": "Desi chips, plastic hai apparently",
-    #         "quantity": 2,
-    #         "price": 30,
-    #         "discount": 0,
-    #         "productId": 2,
-    #     },
-    #     {
-    #         "productName": "Novel",
-    #         "productDescription": "Yeh kaisa book ka naam hai?",
-    #         "quantity": 1,
-    #         "price": 500,
-    #         "discount": 15,
-    #         "productId": 3,
-    #     },
-    # ]
 
     addresses = db.execute(
         'SELECT * FROM UserAddress WHERE userId = ?', (user_id, )).fetchall()

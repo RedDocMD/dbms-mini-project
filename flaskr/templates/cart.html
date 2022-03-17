@@ -92,24 +92,6 @@
     {% endwith %}
     <div class="cart_cont container">
         <ul style="list-style-type: none;">
-            <!-- <li class="pt-4">
-                <div class="card">
-                    <div class="card-header">
-                        Product
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title"><s>Hello</s>
-                            Mello</h5>
-                        <p class="card-text">abcde fghijkl mnop</p>
-                        <div class="input-group">
-                            <input type="button" name="4" value="-" class="button-minus border rounded-circle icon-shape mx-1 " data-field="quantity" style="width: 2rem; height: 2rem;">
-                            <input type="number" min="1" value="1" name="quantity" class="quantity-field border-1 text-center mx-1" style="width: 4rem; height: 2rem;">
-                            <input type="button" name="4" value="+" class="button-plus border rounded-circle icon-shape ml-1 " data-field="quantity" style="width: 2rem; height: 2rem;">
-                        </div>
-                        <button class="remove-cart-btn btn-primary mt-1" name="4">Remove from Cart</button>
-                    </div>
-                </div>
-            </li> -->
             {% for product in products %}
             <li class="pt-4">
                 <div class="card">
@@ -126,15 +108,16 @@
                                 class="button-minus border rounded-circle  icon-shape mx-1 " data-field="quantity"
                                 style="width: 2rem; height: 2rem;">
                             <input type="number" min="1" value="{{product['quantity']}}" name="quantity"
-                                class="quantity-field border-1 text-center mx-1" style="width: 4rem; height: 2rem;" readonly>
+                                class="quantity-field border-1 text-center mx-1" style="width: 4rem; height: 2rem;"
+                                readonly>
                             <input type="button" name="{{product['productId']}},{{product['sellerId']}}" value="+"
                                 class="button-plus border rounded-circle icon-shape ml-1 " data-field="quantity"
                                 style="width: 2rem; height: 2rem;">
                         </div>
                         <form method="get" action="{{url_for('user.cart')}}">
-                        <input type="hidden" name="prodId" value="{{product['productId']}}"/>
-                        <input type="hidden" name="sellerId" value="{{product['sellerId']}}"/>
-                        <button type="submit" class="remove-cart-btn btn-primary mt-1" >Remove from Cart</button>
+                            <input type="hidden" name="prodId" value="{{product['productId']}}" />
+                            <input type="hidden" name="sellerId" value="{{product['sellerId']}}" />
+                            <button type="submit" class="remove-cart-btn btn-primary mt-1">Remove from Cart</button>
                         </form>
                     </div>
                 </div>

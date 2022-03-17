@@ -73,7 +73,6 @@ def assign():
     db = get_db()
     if request.method == 'POST':
         selected_id = request.form['selected_product']
-        print(f'Selected_id = {selected_id}')
         return redirect(url_for('item.assign_values', product_id=selected_id))
     products = db.execute('SELECT * FROM Product').fetchall()
     return render_template('assign_item.html', products=products)

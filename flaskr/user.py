@@ -12,11 +12,9 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 @login_required
 def cart():
     if (request.method == 'POST'):
-        print(request.form['type'])
         user_id = g.user['userId']
         db = get_db()
         if(request.form['type'] == 'Q'):
-            print("Quantity change...")
             prodId = request.form['prodId']
             sellerId = request.form['sellerId']
             newQ = request.form['newQ']
@@ -28,7 +26,6 @@ def cart():
             return "", 201
 
         elif(request.form['type'] == 'R'):
-            print("Remove from cart...")
             prodId = request.form['prodId']
             sellerId = request.form['sellerId']
             db.execute(
@@ -63,15 +60,15 @@ def cart():
     else:
         db = get_db()
         user_id = g.user['userId']
-        prodId = request.args.get('prodId',"")
-        sellerId = request.args.get('sellerId',"")
+        prodId = request.args.get('prodId', "")
+        sellerId = request.args.get('sellerId', "")
 
         if(prodId != ""):
             db.execute(
                 ('DELETE FROM Cart '
-                'WHERE userId = ? AND productId = ? AND sellerId = ?'), (user_id, prodId, sellerId))
+                 'WHERE userId = ? AND productId = ? AND sellerId = ?'), (user_id, prodId, sellerId))
             db.commit()
-        
+
         all_prods = db.execute(
             ('SELECT DISTINCT p.productId, p.productName, p.productDescription, sp.sellerId, u.fullName, sp.price, sp.discount, c.quantity '
              'FROM Product p, SellerProduct sp, User u, Cart c '
@@ -144,7 +141,6 @@ def showseller():
         user_id = g.user['userId']
         db = get_db()
         prodId = request.args['prodId']
-        print(f"Reached here: {prodId}")
         # select sellers for that product
         # render the sellerlist.html and return the page
         # catch the response in the ajax reciever functions and render it in the empty div
@@ -240,9 +236,7 @@ def browse():
         db = get_db()
 
         search_key = str(request.args.get('searchStr', ""))
-        print(search_key)
         search_term = '%' + search_key + '%'
-        print(search_term)
 
         all_prods = []
 
@@ -279,130 +273,9 @@ def browse():
         return render_template('browse.html', products=products, prices=prices, discounted_prices=discounted_prices, searchStr=search_key)
 
 
-# @bp.route('/search', methods=['GET'])
-# @login_required
-# def search():
-#     #if (request.method == 'GET') :
-#     db = get_db()
-#     print(request.form)
-#     search_key = str(request.args.get('searchStr',""))
-#     print(search_key)
-#     search_term = '%' + search_key + '%'
-#     print(search_term)
-
-#     all_prods = db.execute(
-#         ('SELECT p.productId, p.productName, p.productDescription, sp.sellerId, u.fullName, sp.price, sp.discount '
-#         'FROM Product p, SellerProduct sp, User u '
-#         'WHERE p.productName LIKE ? AND p.productId = sp.productId AND sp.sellerId = u.userId '), (search_term,)).fetchall()
-
-#     products = []
-#     prices = {}
-#     discounted_prices = {}
-
-#     for row in all_prods:
-#         product = {
-#             'productId': row['productId'],
-#             'productName': row['productName'],
-#             'productDescription': row['productDescription'],
-#             'sellerId': row['sellerId'],
-#             'sellerName': row['fullName']
-#         }
-#         products.append(product)
-#         price = row['price']
-#         discount = row['discount']
-#         prices[product['productId']] = price
-#         discounted_prices[product['productId']] = int(price *
-#                                                     (100.0 - discount) / 100.0)
-
-#     return render_template('browse.html', products=products, prices=prices, discounted_prices=discounted_prices, searchStr=search_key)
-
-
 @bp.route('/profile', methods=['GET'])
 @login_required
 def profile():
-    # user = {
-    #     "fullName": "John Doe",
-    #     "emailAddress": "xyz@gmail.com",
-    #     "userType": "ADM",
-    #     "sellers": [
-    #         {
-    #             "name": "Aaditya",
-    #             "seller_id": 1
-    #         },
-    #         {
-    #             "name": "Deep",
-    #             "seller_id": 2
-    #         }
-    #     ]
-    # }
-    # user = {
-    #     "fullName": "John Doe",
-    #     "emailAddress": "xyz@gmail.com",
-    #     "userType": "USR",
-    #     "addressNames": [
-    #         {
-    #             "addressName": "1-a, Torana Apartments, Sahar Rd, Opp. P & T Colony, Andheri(e), Mumbai",
-    #             "address_id": 1
-    #         },
-    #         {
-    #             "addressName": "2nd Floor Ntc House, Nm Marg, Ballard Estate",
-    #             "address_id": 2
-    #         },
-    #         {
-    #             "addressName": "4, Jaya Niwas, Goraswadi, Near Milap Talkies, Malad (west)",
-    #             "address_id": 3
-    #         }
-
-    #     ],
-    #     "orders":[
-    #         {
-    #             "order_id": 1,
-    #             "numItems": 6,
-    #             "cost": 1500
-    #         },
-    #         {
-    #             "order_id": 2,
-    #             "numItems": 7,
-    #             "cost": 2000
-    #         },
-    #         {
-    #             "order_id": 3,
-    #             "numItems": 1,
-    #             "cost": 2100
-    #         },
-    #         {
-    #             "order_id": 4,
-    #             "numItems": 8,
-    #             "cost": 2300
-    #         },
-    #     ],
-    # }
-
-    # user = {
-    #     "fullName": "John Doe",
-    #     "emailAddress": "xyz@gmail.com",
-    #     "userType": "SLR",
-    #     "items":[
-    #         {
-    #             "name": "Lays",
-    #             "product_id": 1,
-    #         },
-    #         {
-    #             "name": "Kurkure",
-    #             "product_id": 2,
-    #         },
-    #         {
-    #             "name": "Crescent City",
-    #             "product_id": 3,
-    #         },
-    #         {
-    #             "name": "Harry Potter",
-    #             "product_id": 4,
-    #         },
-    #     ],
-    # }
-
-    # return render_template('profile.html', user = user)
     db = get_db()
     user_id = g.user['userId']
 
@@ -585,7 +458,6 @@ def editAddress(address_id):
         'FROM UserAddress AS ua '
         'WHERE ua.userId = ? AND ua.addressId = ?', (g.user['userId'], address_id)).fetchone()
 
-    print(addressData["addressName"])
     return render_template('editAddress.html', address=addressData)
 
 

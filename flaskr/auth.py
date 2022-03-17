@@ -122,7 +122,6 @@ def signup():
 @bp.route('/register_seller', methods=['POST', 'GET'])
 @login_required
 def register_seller():
-    print("Idhar")
     if request.method == 'POST':
         name = request.form['name']
         address = request.form['address']
@@ -170,5 +169,4 @@ def register_seller():
 
         for error in errors:
             flash(error)
-    print("Idhar")
     return render_template('register_seller.html')
