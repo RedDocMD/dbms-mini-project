@@ -1,5 +1,9 @@
 import os
 from flask import Flask, redirect, url_for, g
+from flask_mail import Mail
+
+
+mail = Mail()
 
 
 def create_app():
@@ -33,5 +37,7 @@ def create_app():
             else:
                 return redirect(url_for('user.profile'))
         return redirect(url_for('auth.login'))
+
+    mail.init_app(app)
 
     return app
