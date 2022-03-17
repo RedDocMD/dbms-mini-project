@@ -42,7 +42,7 @@
                     {% for address in addresses %}
                     <li class="list-group-item">
                         <input class="form-check-input me-1" type="radio" name="selected_address"
-                            value={{address['addressId']}}>
+                            value={{address['addressId']}} required>
                         <div class="d-inline">{{address['addressName']}}</div>
                     </li>
                     {% endfor %}

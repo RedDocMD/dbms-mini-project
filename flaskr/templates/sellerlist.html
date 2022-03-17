@@ -15,7 +15,7 @@
             <ul class="list-group">
             {% for seller in sellers %}
             <li class="list-group-item">
-                <input class="form-check-input me-1" type="radio" name="seller" value="{{seller['sellerId']}}"><b>Name:</b> {{seller['name']}}    <b>Discounted Price:</b>  ₹ {{seller['discountedPrice']}}     <b>Original Price:</b>  ₹ {{seller['price']}} <br>
+                <input class="form-check-input me-1" type="radio" name="seller" value="{{seller['sellerId']}}" required><b>Name:</b> {{seller['name']}}    <b>Discounted Price:</b>  ₹ {{seller['discountedPrice']}}     <b>Original Price:</b>  ₹ {{seller['price']}} <br>
             </li>
 
             {% endfor %}
