@@ -3,7 +3,7 @@ from flask import (Blueprint, render_template,
 from flaskr.db import get_db
 import functools
 import bcrypt
-from . import mail
+from . import mail, azamonEmail
 from flask_mail import Message
 
 
@@ -35,7 +35,7 @@ def login():
             session['userType'] = user['userType']
             g.user = user
             msg = Message("You have a new login to aZaMoN (DBMS project demo app)",
-                          sender="dbms_project_app@example.com",
+                          sender=azamonEmail,
                           recipients=[user["emailAddress"]])
             mail.send(msg)
             if user['userType'] == 'USR':

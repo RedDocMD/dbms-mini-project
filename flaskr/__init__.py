@@ -4,6 +4,7 @@ from flask_mail import Mail
 
 
 mail = Mail()
+azamonEmail = "taskone.notchup@gmail.com"
 
 
 def create_app():
@@ -37,6 +38,13 @@ def create_app():
             else:
                 return redirect(url_for('user.profile'))
         return redirect(url_for('auth.login'))
+
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 465
+    app.config['MAIL_USERNAME'] = azamonEmail
+    app.config['MAIL_PASSWORD'] = 'task1.notchup'
+    app.config['MAIL_USE_TLS'] = False
+    app.config['MAIL_USE_SSL'] = True
 
     mail.init_app(app)
 
