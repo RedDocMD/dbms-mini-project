@@ -202,7 +202,7 @@ def checkout():
             except db.IntegrityError as e:
                 errors.append(f'Failed to checkout: {e}')
             else:
-                return redirect('/')
+                return redirect(url_for('order.order', order_id=order_id))
 
             for error in errors:
                 flash(error)

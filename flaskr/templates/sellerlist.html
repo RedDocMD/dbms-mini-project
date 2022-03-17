@@ -2,29 +2,49 @@
 {% block title %}Pick a Seller{% endblock %}
 
 {% block main %}
-<div class="sellerlist container-fluid" >
-    <div class="sellerlist_header container">
-        <p class="display-3 pt-4 text-center">Pick A Seller</h3>
-        <div class="border mx-auto mb-3" style="max-width:50%;"><p class="pt-4 text-center"><b>Product Name : {{productName}}</b><br>
-        <span class="text-center text-muted">Product ID : {{productID}}</span><br>
-        Product Description : {{productDescription}}</p></div>
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4 pt-4 text-center">Pick A Seller</h1>
+        </div>
     </div>
-    
-    <div class="seller_cont container">
-        <form method="get" action="{{url_for('user.wishlisttocart')}}">
-            <ul class="list-group">
-            {% for seller in sellers %}
-            <li class="list-group-item">
-                <input class="form-check-input me-1" type="radio" name="seller" value="{{seller['sellerId']}}" required><b>Name:</b> {{seller['name']}}    <b>Discounted Price:</b>  ₹ {{seller['discountedPrice']}}     <b>Original Price:</b>  ₹ {{seller['price']}} <br>
-            </li>
-
-            {% endfor %}
-        </ul>
+    <div class="row mb-4">
+        <div class="col"></div>
+        <div class="col-6">
+            <div class="border pt-2 pb-2 ps-3">
+                <div class="fw-bold">{{productName}}</div>
+                <div>{{productDescription}}</div>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-6">
+            <form method="get" action="{{url_for('user.wishlisttocart')}}">
+                <div class="fw-bold pb-2">Sellers:</div>
+                <ul class="list-group">
+                    {% for seller in sellers %}
+                    <li class="list-group-item d-flex align-items-center">
+                        <input class="form-check-input me-1" type="radio" name="seller" value="{{seller['sellerId']}}"
+                            required>
+                        <div class="d-inline">
+                            <div class="fw-bold ms-2">{{seller['name']}}</div>
+                            <div class="d-flex ms-2">
+                                <div class="d-inline text-decoration-line-through">₹ {{seller['price']}}</div>
+                                <div class="d-inline ps-2">₹ {{seller['discountedPrice']}}</div>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
                 <input type="hidden" name="prod" value="{{productID}}" />
                 <div class="d-grid mx-auto">
-                <button type="submit" class="btn-success btn-lg mx-auto mt-4">Add to Cart</button>
+                    <button type="submit" class="btn-success btn-lg mx-auto mt-4">Add to Cart</button>
                 </div>
-        </form>
+            </form>
+        </div>
+        <div class="col"></div>
     </div>
 </div>
 {% endblock %}
