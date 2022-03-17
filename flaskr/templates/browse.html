@@ -12,7 +12,9 @@
                 type: 'IC',
                 prodId: prodId,
                 sellerId: sellerId
-            }, function () {})
+            }, function () {
+                Swal.fire("Added to cart!");
+            })
         });
 
         $('.card-body').on('click', '.add-wishlist-btn', function (e) {
@@ -21,7 +23,9 @@
             $.post("/user/browse", {
                 type: 'IW',
                 prodId: prodId,
-            }, function () {})
+            }, function () {
+                Swal.fire("Added to wishlist!");
+            })
         });
     });
 </script>
